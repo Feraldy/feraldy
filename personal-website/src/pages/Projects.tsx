@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import Navbar from '../components/Navbar';
 
-const Projects = () => {
+const Projects: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -34,28 +35,7 @@ const Projects = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-neutral-900/80 backdrop-blur-sm z-40 border-b border-neutral-700">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-          <a href="/" className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
-            Feraldy
-          </a>
-          <nav className="flex gap-3 md:gap-6">
-            <a href="/" className="text-sm md:text-base text-gray-300 hover:text-white transition-colors duration-300">
-              Home
-            </a>
-            <a href="/resume" className="text-sm md:text-base text-gray-300 hover:text-white transition-colors duration-300">
-              Resume
-            </a>
-            <a href="/projects" className="text-sm md:text-base text-yellow-400 font-semibold">
-              Projects
-            </a>
-            <a href="/blog" className="text-sm md:text-base text-gray-300 hover:text-white transition-colors duration-300">
-              Blog
-            </a>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main Content */}
       <main className="pt-16 md:pt-20 px-4">

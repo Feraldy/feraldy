@@ -1,11 +1,20 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import Navbar from '../components/Navbar';
 
-const Blog = () => {
+interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  date: string;
+  filename: string;
+}
+
+const Blog: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [postContent, setPostContent] = useState('');
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [postContent, setPostContent] = useState<string>('');
 
   useEffect(() => {
     setIsVisible(true);
@@ -37,15 +46,15 @@ const Blog = () => {
         setPostContent(content);
       } else {
         // Fallback content if file doesn't exist
-        setPostContent(`# ${selectedPost.title}\n\nContent coming soon...`);
+        setPostContent(`# ${selectedPost?.title}\n\nContent coming soon...`);
       }
     } catch (error) {
       console.error('Error loading post:', error);
-      setPostContent(`# ${selectedPost.title}\n\nError loading post content.`);
+      setPostContent(`# ${selectedPost?.title}\n\nError loading post content.`);
     }
   };
 
-  const handlePostClick = (post) => {
+  const handlePostClick = (post: BlogPost) => {
     setSelectedPost(post);
     loadPostContent(post.filename);
   };
@@ -58,28 +67,7 @@ const Blog = () => {
   if (selectedPost) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 bg-neutral-900/80 backdrop-blur-sm z-40 border-b border-neutral-700">
-          <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
-              Feraldy
-            </a>
-            <nav className="flex gap-6">
-              <a href="/" className="text-gray-300 hover:text-white transition-colors duration-300">
-                Home
-              </a>
-              <a href="/portfolio" className="text-gray-300 hover:text-white transition-colors duration-300">
-                Portfolio
-              </a>
-              <a href="/tools" className="text-gray-300 hover:text-white transition-colors duration-300">
-                Tools
-              </a>
-              <a href="/blog" className="text-yellow-400 font-semibold">
-                Blog
-              </a>
-            </nav>
-          </div>
-        </header>
+        <Navbar />
 
         {/* Post Content */}
         <main className="pt-16 md:pt-20 px-4">
@@ -104,10 +92,12 @@ const Blog = () => {
                   ul: ({children}) => <ul className="text-gray-300 mb-4 list-disc list-inside">{children}</ul>,
                   ol: ({children}) => <ol className="text-gray-300 mb-4 list-decimal list-inside">{children}</ol>,
                   li: ({children}) => <li className="mb-2">{children}</li>,
-                  code: ({inline, children}) => 
-                    inline 
+                  code: ({children, ...props}) => {
+                    const isInline = !props.className?.includes('language-');
+                    return isInline 
                       ? <code className="bg-gray-700 text-yellow-400 px-2 py-1 rounded text-sm">{children}</code>
-                      : <code className="block bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">{children}</code>,
+                      : <code className="block bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">{children}</code>;
+                  },
                   pre: ({children}) => <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto mb-4">{children}</pre>,
                   blockquote: ({children}) => <blockquote className="border-l-4 border-blue-400 pl-4 italic text-gray-400 mb-4">{children}</blockquote>,
                   a: ({href, children}) => <a href={href} className="text-blue-400 hover:text-blue-300 underline">{children}</a>,
@@ -127,28 +117,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
-      {/* Header */}
-        <header className="fixed top-0 left-0 right-0 bg-neutral-900/80 backdrop-blur-sm z-40 border-b border-neutral-700">
-          <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="/" className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
-              Feraldy
-            </a>
-            <nav className="flex gap-3 md:gap-6">
-              <a href="/" className="text-sm md:text-base text-gray-300 hover:text-white transition-colors duration-300">
-                Home
-              </a>
-              <a href="/resume" className="text-sm md:text-base text-gray-300 hover:text-white transition-colors duration-300">
-                Resume
-              </a>
-              <a href="/projects" className="text-sm md:text-base text-gray-300 hover:text-white transition-colors duration-300">
-                Projects
-              </a>
-              <a href="/blog" className="text-sm md:text-base text-yellow-400 font-semibold">
-                Blog
-              </a>
-            </nav>
-          </div>
-        </header>
+      <Navbar />
         {/* Main Content */}
         <main className="pt-16 md:pt-20 px-4">
           <div className="max-w-6xl mx-auto">

@@ -1,6 +1,12 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const AnimatedText = ({ text, className = '', delay = 0 }) => {
+interface AnimatedTextProps {
+  text: string;
+  className?: string;
+  delay?: number;
+}
+
+const AnimatedText: React.FC<AnimatedTextProps> = ({ text, className = '', delay = 0 }) => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
