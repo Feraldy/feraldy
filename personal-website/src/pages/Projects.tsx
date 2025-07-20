@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import WellBalanceImage from '../assets/WellBalance.png';
+import CoffeeWithDyImage from '../assets/CoffeeWIthDy.png';
 
 const Projects: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -18,7 +20,8 @@ const Projects: React.FC = () => {
       technologies: ["React", "Next.js", "Tailwind CSS", "Vercel"],
       liveUrl: "https://well-balance.vercel.app",
       githubUrl: "#", // Add your GitHub URL when available
-      status: "Active"
+      status: "Active",
+      image: WellBalanceImage
     },
     {
       id: 2,
@@ -28,7 +31,8 @@ const Projects: React.FC = () => {
       technologies: ["React", "Next.js", "Tailwind CSS", "Vercel"],
       liveUrl: "https://coffeewith-dy.vercel.app",
       githubUrl: "#", // Add your GitHub URL when available
-      status: "Active"
+      status: "Active",
+      image: CoffeeWithDyImage
     }
     // Add more tools here
   ];
@@ -69,9 +73,17 @@ const Projects: React.FC = () => {
                 }`}
                 style={{ transitionDelay: `${0.4 + index * 0.2}s` }}
               >
-                {/* Project Icon/Image */}
-                <div className="h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 flex items-center justify-center">
-                  <div className="text-6xl text-gray-600">🚀</div>
+                {/* Project Image */}
+                <div className="h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden">
+                  {project.image ? (
+                    <img 
+                      src={project.image} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-6xl text-gray-600">🚀</div>
+                  )}
                 </div>
 
                 {/* Project Content */}

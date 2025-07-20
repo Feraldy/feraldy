@@ -36,11 +36,11 @@ const Blog: React.FC = () => {
     setPosts(blogPosts);
   };
 
-  const loadPostContent = async (filename) => {
+  const loadPostContent = async (filename: string) => {
     try {
-      // In a real app, you'd fetch from your server or use dynamic imports
-      // For now, we'll use a simple approach
-      const response = await fetch(`/src/blog-posts/${filename}`);
+      // Import the markdown file directly
+      const module = await import(`../blog-posts/${filename}`);
+      const response = await fetch(module.default);
       if (response.ok) {
         const content = await response.text();
         setPostContent(content);

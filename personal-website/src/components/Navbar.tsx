@@ -7,7 +7,6 @@ const Navbar: React.FC = () => {
   const [lastScrollY, setLastScrollY] = useState(0)
   
   const navItems = [
-    { path: '/', label: 'Home' },
     { path: '/resume', label: 'Resume' },
     { path: '/projects', label: 'Projects' },
     { path: '/photography', label: 'Photography' },
