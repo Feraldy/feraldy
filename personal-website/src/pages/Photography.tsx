@@ -5,6 +5,7 @@ import { auto, fill } from '@cloudinary/url-gen/actions/resize'
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity'
 import { format, quality } from '@cloudinary/url-gen/actions/delivery'
 import Navbar from '../components/Navbar'
+import TerminalLayout from '../components/TerminalLayout'
 
 const Photography: React.FC = () => {
   const [currentCollage, setCurrentCollage] = useState(0)
@@ -94,20 +95,28 @@ const Photography: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
+    <>
       <Navbar />
+      
+      <TerminalLayout title="Photography" command="cd ./photography && ls -la">
+        {/* Terminal command simulation */}
+        <div className="mb-6 font-mono text-sm">
+          <div className="flex items-center mb-2">
+            <span className="text-blue-400 mr-2">$</span>
+            <span className="text-gray-300">find . -name "*.jpg" -o -name "*.png" | wc -l</span>
+            <span className="text-green-400 ml-2">✓</span>
+          </div>
+          <div className="pl-4 text-gray-300 mb-4">
+            {allImages.length} images found
+          </div>
+        </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 pt-20 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent mb-6">
-            Photography
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+        <div className="mb-8">
+          <p className="text-lg text-gray-400 mb-6">
             Capturing moments and telling stories through the lens. 
             Watch as each collage transforms into a new visual narrative.
           </p>
-          <div className="mt-8 flex justify-center items-center space-x-4">
+          <div className="flex justify-center items-center space-x-4">
             <div className="text-sm text-gray-400">
               {collageLayouts[currentCollage].name} Layout
             </div>
@@ -123,7 +132,6 @@ const Photography: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
 
       {/* Dynamic Collage */}
       <div className="relative px-4 sm:px-6 lg:px-8 pb-20">
@@ -219,20 +227,21 @@ const Photography: React.FC = () => {
         </div>
       )}
 
-      {/* Custom CSS for animations */}
-      <style>{`
-        @keyframes fadeInScale {
-          0% {
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
+        {/* Custom CSS for animations */}
+        <style>{`
+          @keyframes fadeInScale {
+            0% {
+              opacity: 0;
+              transform: scale(0.8) translateY(20px);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
           }
-          100% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-          }
-        }
-      `}</style>
-    </div>
+        `}</style>
+      </TerminalLayout>
+    </>
   )
 }
 

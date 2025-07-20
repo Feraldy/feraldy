@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
+import SEO from '../components/SEO';
+
+import TerminalLayout from '../components/TerminalLayout';
 import WellBalanceImage from '../assets/WellBalance.png';
 import CoffeeWithDyImage from '../assets/CoffeeWIthDy.png';
 
 const Projects: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
 
   // Your personal projects
   const projects = [
@@ -38,40 +36,39 @@ const Projects: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
+    <>
+      <SEO 
+        title="Projects | Feraldy"
+        description="Explore my portfolio of web development projects, including React applications, tools, and experiments."
+        keywords={['projects', 'portfolio', 'web development', 'react', 'next.js']}
+      />
       <Navbar />
-
-      {/* Main Content */}
-      <main className="pt-16 md:pt-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          {/* Page Title */}
-          <div className="text-center mb-12 md:mb-16 pt-8 md:pt-12">
-            <h1 
-              className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 transition-all duration-1000 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-            >
-              My Projects
-            </h1>
-            <p 
-              className={`text-base md:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto px-4 transition-all duration-1000 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-              style={{ transitionDelay: '0.2s' }}
-            >
-              A collection of personal projects and tools I've built to solve problems and explore new technologies.
-            </p>
+      
+      <TerminalLayout title="My Projects">
+        {/* Terminal command simulation */}
+        <div className="mb-6 font-mono text-sm">
+          <div className="flex items-center mb-2">
+            <span className="text-blue-400 mr-2">$</span>
+            <span className="text-gray-300">ls -la projects/</span>
+            <span className="text-green-400 ml-2">✓</span>
           </div>
+          <div className="pl-4 text-gray-400 mb-4">
+            total {projects.length} projects
+          </div>
+        </div>
 
-          {/* Projects Grid */}
-          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 md:mb-16">
+        <div className="mb-8">
+          <p className="text-lg text-gray-400 mb-8">
+            A collection of personal projects and tools I've built to solve problems and explore new technologies.
+          </p>
+        </div>
+
+        {/* Projects Grid */}
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-12">
             {projects.map((project, index) => (
-              <div
-                key={project.id}
-                className={`bg-neutral-800 rounded-lg overflow-hidden hover:transform hover:scale-105 transition-all duration-500 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                }`}
-                style={{ transitionDelay: `${0.4 + index * 0.2}s` }}
+              <div 
+                key={project.id} 
+                className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden hover:border-yellow-400 transition-all duration-300"
               >
                 {/* Project Image */}
                 <div className="h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden">
@@ -139,29 +136,23 @@ const Projects: React.FC = () => {
             ))}
           </div>
 
-          {/* Add Tool CTA */}
-          <div 
-            className={`text-center pb-16 transition-all duration-1000 ${
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}
-            style={{ transitionDelay: '1s' }}
+        {/* Add Tool CTA */}
+        <div className="text-center mt-12">
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Have an idea for a project?
+          </h2>
+          <p className="text-gray-400 mb-6">
+            I'm always looking for new challenges and interesting problems to solve. Let's collaborate!
+          </p>
+          <button
+            onClick={() => window.location.href = '/#contact'}
+            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-blue-600 transform hover:scale-105 transition-all duration-300"
           >
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Have an idea for a project?
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-              I'm always looking for new challenges and interesting problems to solve. Let's collaborate!
-            </p>
-            <a
-              href="/"
-              className="inline-block px-8 py-4 bg-gradient-to-r from-blue-400 to-blue-500 text-white font-semibold rounded-full hover:from-blue-500 hover:to-blue-600 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              Get In Touch
-            </a>
-          </div>
+            Get In Touch
+          </button>
         </div>
-      </main>
-    </div>
+      </TerminalLayout>
+    </>
   );
 };
 

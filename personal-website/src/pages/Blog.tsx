@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Navbar from '../components/Navbar';
+import TerminalLayout from '../components/TerminalLayout';
 
 interface BlogPost {
   id: number;
@@ -109,23 +110,36 @@ Stay tuned for more posts about my projects and development journey!
 
   if (selectedPost) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
+      <>
         <Navbar />
+        
+        <TerminalLayout title={selectedPost.title} command={`cat ./blog/${selectedPost.filename}`}>
+          <div className="mb-6 font-mono text-sm">
+            <div className="flex items-center mb-2">
+              <span className="text-blue-400 mr-2">$</span>
+              <span className="text-gray-300">head -n 1 {selectedPost.filename}</span>
+              <span className="text-green-400 ml-2">✓</span>
+            </div>
+            <div className="pl-4 text-gray-300 mb-4">
+              Published: {new Date(selectedPost.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </div>
+          </div>
 
-        {/* Post Content */}
-        <main className="pt-16 md:pt-20 px-4">
-          <div className="max-w-4xl mx-auto">
-            <button
-              onClick={handleBackToList}
-              className="mb-8 flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Blog
-            </button>
+          <button
+            onClick={handleBackToList}
+            className="mb-8 flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Blog
+          </button>
 
-            <article className="bg-neutral-800 rounded-lg p-4 md:p-8 prose prose-invert prose-sm md:prose-lg max-w-none">
+          <article className="bg-neutral-800 rounded-lg p-4 md:p-8 prose prose-invert prose-sm md:prose-lg max-w-none">
               <ReactMarkdown
                 components={{
                   h1: ({children}) => <h1 className="text-4xl font-bold text-white mb-6">{children}</h1>,
@@ -152,36 +166,33 @@ Stay tuned for more posts about my projects and development journey!
                 {postContent}
               </ReactMarkdown>
             </article>
-          </div>
-        </main>
-      </div>
+        </TerminalLayout>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
+    <>
       <Navbar />
-        {/* Main Content */}
-        <main className="pt-16 md:pt-20 px-4">
-          <div className="max-w-6xl mx-auto">
-            {/* Page Title */}
-            <div className="text-center mb-12 md:mb-16 pt-8 md:pt-12">
-              <h1 
-                className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 transition-all duration-1000 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                }`}
-              >
-                Blog
-              </h1>
-              <p 
-                className={`text-base md:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto px-4 transition-all duration-1000 ${
-                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                }`}
-                style={{ transitionDelay: '0.2s' }}
-              >
-                Thoughts on development, tools, and technology.
-              </p>
-            </div>
+      
+      <TerminalLayout title="Blog" command="cd ./blog && ls -la">
+        {/* Terminal command simulation */}
+        <div className="mb-6 font-mono text-sm">
+          <div className="flex items-center mb-2">
+            <span className="text-blue-400 mr-2">$</span>
+            <span className="text-gray-300">find . -name "*.md" | wc -l</span>
+            <span className="text-green-400 ml-2">✓</span>
+          </div>
+          <div className="pl-4 text-gray-300 mb-4">
+            {posts.length} blog posts found
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <p className="text-lg text-gray-400">
+            Thoughts on development, tools, and technology.
+          </p>
+        </div>
           {/* Blog Posts */}
           <div className="max-w-4xl mx-auto">
             {posts.length === 0 ? (
@@ -224,10 +235,9 @@ Stay tuned for more posts about my projects and development journey!
                 ))}
               </div>
             )}
-          </div>
         </div>
-      </main>
-    </div>
+      </TerminalLayout>
+    </>
   );
 };
 

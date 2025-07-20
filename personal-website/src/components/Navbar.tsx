@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
+import { getTextGradientClass } from '../context/ThemeContext'
 
 const Navbar: React.FC = () => {
   const location = useLocation()
@@ -92,7 +93,7 @@ const Navbar: React.FC = () => {
         onMouseEnter={() => setIsVisible(true)}
       >
         <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-          <a href="/" className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
+          <a href="/" className={`text-xl md:text-2xl font-bold ${getTextGradientClass('primary')}`}>
             Feraldy
           </a>
           <nav className="flex gap-3 md:gap-6">
