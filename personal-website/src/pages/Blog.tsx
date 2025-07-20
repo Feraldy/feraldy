@@ -8,6 +8,7 @@ interface BlogPost {
   excerpt: string;
   date: string;
   filename: string;
+  content?: string;
 }
 
 const Blog: React.FC = () => {
@@ -38,24 +39,67 @@ const Blog: React.FC = () => {
 
   const loadPostContent = async (filename: string) => {
     try {
-      // For production, use a direct import approach
-      import(`../blog-posts/${filename}`)
-        .then(content => {
-          setPostContent(content.default);
-        })
-        .catch(error => {
-          console.error('Error importing markdown:', error);
+      // Hardcoded content for welcome.md
+      if (filename === 'welcome.md') {
+        const welcomeContent = `# Welcome to My Blog
+
+Welcome to my personal blog! This is where I'll share my thoughts on development, tools, and technology.
+
+## Getting Started
+
+This blog supports **Markdown** formatting, so I can easily write posts with:
+
+- **Bold text**
+- *Italic text*
+- \`Code snippets\`
+- Links and more!
+
+### Code Example
+
+\`\`\`javascript
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+
+console.log(greet('World'));
+\`\`\`
+
+Stay tuned for more posts about my projects and development journey!
+
+---
+
+*Published: January 2025*`;
+        
+        setPostContent(welcomeContent);
+        return;
+      }
+      
+      // For other files, try to fetch them
+      try {
+        const response = await fetch(`/src/blog-posts/${filename}`);
+        if (response.ok) {
+          const content = await response.text();
+          setPostContent(content);
+        } else {
           setPostContent(`# ${selectedPost?.title}\n\nContent coming soon...`);
-        });
+        }
+      } catch (error) {
+        console.error('Error fetching post:', error);
+        setPostContent(`# ${selectedPost?.title}\n\nError loading post content.`);
+      }
     } catch (error) {
-      console.error('Error loading post:', error);
+      console.error('Error in loadPostContent:', error);
       setPostContent(`# ${selectedPost?.title}\n\nError loading post content.`);
     }
   };
 
   const handlePostClick = (post: BlogPost) => {
     setSelectedPost(post);
-    loadPostContent(post.filename);
+    if (post.content) {
+      setPostContent(post.content);
+    } else {
+      loadPostContent(post.filename);
+    }
   };
 
   const handleBackToList = () => {
