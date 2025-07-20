@@ -38,16 +38,15 @@ const Blog: React.FC = () => {
 
   const loadPostContent = async (filename: string) => {
     try {
-      // Import the markdown file directly
-      const module = await import(`../blog-posts/${filename}`);
-      const response = await fetch(module.default);
-      if (response.ok) {
-        const content = await response.text();
-        setPostContent(content);
-      } else {
-        // Fallback content if file doesn't exist
-        setPostContent(`# ${selectedPost?.title}\n\nContent coming soon...`);
-      }
+      // For production, use a direct import approach
+      import(`../blog-posts/${filename}`)
+        .then(content => {
+          setPostContent(content.default);
+        })
+        .catch(error => {
+          console.error('Error importing markdown:', error);
+          setPostContent(`# ${selectedPost?.title}\n\nContent coming soon...`);
+        });
     } catch (error) {
       console.error('Error loading post:', error);
       setPostContent(`# ${selectedPost?.title}\n\nError loading post content.`);
