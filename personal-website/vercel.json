@@ -1,29 +1,9 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "routes": [
-    { 
-      "handle": "filesystem" 
-    },
-    {
-      "src": "/blog",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/resume",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/projects",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/photography",
-      "dest": "/index.html"
-    }
+    { "source": "/blog", "destination": "/index.html" },
+    { "source": "/resume", "destination": "/index.html" },
+    { "source": "/projects", "destination": "/index.html" },
+    { "source": "/photography", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
