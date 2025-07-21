@@ -139,7 +139,7 @@ Stay tuned for more posts about my projects and development journey!
             Back to Blog
           </button>
 
-          <article className="bg-neutral-800 rounded-lg p-4 md:p-8 prose prose-invert prose-sm md:prose-lg max-w-none">
+          <article className="bg-slate-800 rounded-lg p-4 md:p-8 prose prose-invert prose-sm md:prose-lg max-w-none">
               <ReactMarkdown
                 components={{
                   h1: ({children}) => <h1 className="text-4xl font-bold text-white mb-6">{children}</h1>,
@@ -194,7 +194,7 @@ Stay tuned for more posts about my projects and development journey!
           </p>
         </div>
           {/* Blog Posts */}
-          <div className="max-w-4xl mx-auto">
+          <div className="w-full">
             {posts.length === 0 ? (
               <div className="text-center py-16">
                 <p className="text-gray-400 text-lg">No blog posts yet. Check back soon!</p>
@@ -225,12 +225,9 @@ Stay tuned for more posts about my projects and development journey!
                     <p className="text-gray-300 leading-relaxed mb-4">
                       {post.excerpt}
                     </p>
-                    <div className="flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300">
-                      <span className="text-sm font-medium">Read more</span>
-                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
+                    <button className="text-left w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200">
+                      <span className="text-yellow-400">cat</span> <span className="text-blue-400">{post.filename}</span>
+                    </button>
                   </article>
                 ))}
               </div>

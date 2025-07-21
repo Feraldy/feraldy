@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import SEO from '../components/SEO';
+import ContactModal from '../components/ContactModal';
 
 import TerminalLayout from '../components/TerminalLayout';
 import WellBalanceImage from '../assets/WellBalance.png';
 import CoffeeWithDyImage from '../assets/CoffeeWIthDy.png';
 
 const Projects: React.FC = () => {
+  const [showContactModal, setShowContactModal] = useState(false);
 
   // Your personal projects
   const projects = [
@@ -68,7 +70,7 @@ const Projects: React.FC = () => {
             {projects.map((project, index) => (
               <div 
                 key={project.id} 
-                className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden hover:border-yellow-400 transition-all duration-300"
+                className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-yellow-400 transition-all duration-300"
               >
                 {/* Project Image */}
                 <div className="h-48 bg-gradient-to-br from-green-500/20 to-blue-500/20 flex items-center justify-center overflow-hidden">
@@ -137,23 +139,28 @@ const Projects: React.FC = () => {
           </div>
 
         {/* Add Tool CTA */}
-        <div className="text-center mt-12">
+        <div className="mt-12">
           <h2 className="text-2xl font-bold text-white mb-4">
             Have an idea for a project?
           </h2>
           <p className="text-gray-400 mb-6">
             I'm always looking for new challenges and interesting problems to solve. Let's collaborate!
           </p>
-          <button
-            onClick={() => window.location.href = '/#contact'}
-            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-400 to-blue-500 text-white font-semibold rounded-lg hover:from-blue-500 hover:to-blue-600 transform hover:scale-105 transition-all duration-300"
-          >
-            Get In Touch
-          </button>
-        </div>
-      </TerminalLayout>
-    </>
-  );
-};
-
+           <button
+             onClick={() => setShowContactModal(true)}
+             className="text-left w-full max-w-xs px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200"
+           >
+             <span className="text-yellow-400">run</span> <span className="text-blue-400">./contact.sh</span>
+           </button>
+         </div>
+       </TerminalLayout>
+       
+       {/* Contact Modal */}
+       <ContactModal 
+         isOpen={showContactModal} 
+         onClose={() => setShowContactModal(false)} 
+       />
+     </>
+   );
+ };
 export default Projects;

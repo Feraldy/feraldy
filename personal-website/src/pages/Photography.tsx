@@ -174,7 +174,7 @@ const Photography: React.FC = () => {
       {/* About Section */}
       <div className="relative z-10 px-4 sm:px-6 lg:px-8 pb-20">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-neutral-800/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-neutral-700">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 border border-slate-700">
             <h2 className="text-3xl font-bold text-white mb-6">About My Photography</h2>
             <p className="text-gray-300 leading-relaxed text-lg mb-8">
               Photography has been my passion for [X] years. I specialize in [your specialty - 

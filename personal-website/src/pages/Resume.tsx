@@ -246,15 +246,15 @@ const Resume: React.FC = () => {
         <div className="mb-8">
           <button
             onClick={handleDownloadCV}
-            className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-gray-900 font-semibold rounded hover:from-yellow-500 hover:to-yellow-600 transform hover:scale-105 transition-all duration-300"
+            className="text-left w-full max-w-xs px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200"
           >
-            Download CV
+            <span className="text-yellow-400">download</span> <span className="text-blue-400">./CV_Feraldy.pdf</span>
           </button>
         </div>
         
         {/* About Me Section */}
         <div className="mb-12">
-          <div className="bg-neutral-800 rounded-lg border border-gray-700 p-6 md:p-8">
+          <div className="bg-slate-800 rounded-lg border border-slate-700 p-6 md:p-8">
             <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
               {/* Profile Photo */}
               <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-yellow-400 flex-shrink-0 shadow-lg">
@@ -290,7 +290,7 @@ const Resume: React.FC = () => {
             
             <div className="space-y-4">
               {experience.map((company) => (
-                <div key={company.id} className="bg-neutral-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all duration-200">
+                <div key={company.id} className="bg-slate-800 rounded-lg border border-slate-700 hover:border-slate-600 transition-all duration-200">
                   {/* LinkedIn-style Experience Card */}
                   <div 
                     className="cursor-pointer p-4"
@@ -418,7 +418,7 @@ const Resume: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {education.map((edu, index) => (
-                <div key={index} className="bg-neutral-800 rounded-lg border border-gray-700 hover:border-gray-600 transition-all duration-200 p-5">
+                <div key={index} className="bg-slate-800 rounded-lg border border-slate-700 hover:border-slate-600 transition-all duration-200 p-5">
                   <h3 className="text-lg font-semibold text-white">{edu.institution}</h3>
                   <p className="text-yellow-400 text-sm mt-1">{edu.degree}, {edu.field}</p>
                   <div className="flex justify-between items-center mt-2 mb-3">

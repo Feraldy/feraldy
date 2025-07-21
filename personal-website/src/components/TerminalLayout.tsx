@@ -8,21 +8,29 @@ interface TerminalLayoutProps {
 }
 
 const TerminalLayout: React.FC<TerminalLayoutProps> = ({ children, title, command }) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const [terminalOpened, setTerminalOpened] = useState(false);
+  const [appAnimationStage, setAppAnimationStage] = useState<'tiny' | 'opened'>('tiny');
   const [contentVisible, setContentVisible] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    // Reset states on route change
-    setIsVisible(false);
-    setTerminalOpened(false);
+    // Reset and restart animation on route change
+    setAppAnimationStage('tiny');
     setContentVisible(false);
+    
+    // Start the smooth opening animation after a brief delay (matching Landing page)
+    const timer1 = setTimeout(() => {
+      setAppAnimationStage('opened');
+    }, 500);
+    
+    // Content ready, start showing content after animation completes (matching Landing page)
+    const timer2 = setTimeout(() => {
+      setContentVisible(true);
+    }, 2500);
 
-    // OS-like app opening sequence
-    setTimeout(() => setIsVisible(true), 100);
-    setTimeout(() => setTerminalOpened(true), 400);
-    setTimeout(() => setContentVisible(true), 700);
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
   }, [location.pathname]);
 
   // Get command based on current route
@@ -40,76 +48,81 @@ const TerminalLayout: React.FC<TerminalLayoutProps> = ({ children, title, comman
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
-      <div className="min-h-screen flex items-start justify-center px-4 pt-16 md:pt-20">
-        <div className="w-full max-w-7xl mx-auto">
+    <div className="min-h-screen terminal-bg">
+      <div className="min-h-screen flex items-start justify-center px-2 sm:px-4 pt-16 md:pt-20 pb-8">
+        <div className="flex items-start justify-center w-full">
           {/* Terminal Window */}
           <div 
-            className={`bg-gray-900 rounded-lg overflow-hidden border border-gray-700 shadow-2xl ${
-              isVisible 
-                ? terminalOpened
-                  ? 'opacity-100 scale-100 translate-y-0'
-                  : 'opacity-70 scale-75 translate-y-6'
-                : 'opacity-0 scale-[0.4] translate-y-12'
+            className={`bg-gray-900 rounded-lg overflow-hidden border border-gray-700 shadow-2xl w-full max-w-6xl mx-auto transition-all duration-1000 ease-out ${
+              appAnimationStage === 'tiny' 
+                ? 'scale-0 opacity-0' 
+                : 'scale-100 opacity-100'
             }`}
             style={{
-              transformOrigin: 'center bottom',
-              transition: 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-              filter: terminalOpened 
-                ? 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.5))' 
-                : 'drop-shadow(0 10px 25px rgba(0, 0, 0, 0.3))',
+              transformOrigin: 'center center',
+              height: 'clamp(600px, 85vh, 1000px)',
+              filter: appAnimationStage === 'opened'
+                ? 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.6))' 
+                : 'drop-shadow(0 15px 35px rgba(0, 0, 0, 0.4))',
               willChange: 'transform, opacity, filter'
             }}
           >
             {/* Terminal Header */}
-            <div className="bg-gray-800 px-4 py-3 flex items-center justify-between border-b border-gray-700">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            {appAnimationStage !== 'tiny' && (
+              <div className="bg-gray-800 px-4 py-2 flex items-center justify-between border-b border-gray-700">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div className="text-gray-400 text-sm font-mono">feraldy@portfolio ~ </div>
+                <div className="w-4"></div>
               </div>
-              <div className="text-gray-400 text-sm font-mono">feraldy@portfolio ~ </div>
-              <div className="w-4"></div>
-            </div>
-            
-            {/* Terminal Command Bar */}
-            <div className="bg-gray-850 px-4 py-2 border-b border-gray-700 font-mono text-sm">
-              <div className="flex items-center">
-                <span className="text-blue-400 mr-2">$</span>
-                <span className="text-gray-300">{getCurrentCommand()}</span>
-                <span className="text-green-400 ml-2">✓</span>
-              </div>
-            </div>
+            )}
             
             {/* Terminal Content */}
-            <div 
-              className={`transition-all duration-500 ${
-                terminalOpened 
-                  ? 'min-h-[600px] opacity-100' 
-                  : 'h-0 opacity-0'
-              }`}
-            >
-              <div 
-                className={`p-6 transition-all duration-300 ${
-                  contentVisible 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-4'
-                }`}
-              >
-                {/* Page Title */}
-                <div className="mb-8">
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2">
-                    {title}
-                  </h1>
-                  <div className="h-1 w-20 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded"></div>
-                </div>
-                
-                {/* Page Content */}
-                <div className="text-gray-300">
-                  {children}
-                </div>
+            {appAnimationStage === 'opened' && (
+              <div className="flex flex-col h-full" style={{ height: 'calc(100% - 60px)' }}>
+                {contentVisible && (
+                  <>
+                    {/* Fixed Header Section */}
+                    <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm md:text-base text-gray-300 flex-shrink-0">
+                      <div className="space-y-2">
+                        {/* Initial welcome header */}
+                        <div className="pb-2 border-b border-gray-700">
+                          <p className="text-green-400">Welcome to Feraldy's Terminal Portfolio v1.0.0</p>
+                          <p className="text-gray-400 text-xs mt-1">Type 'help' for available commands</p>
+                        </div>
+                        
+                        {/* Command execution */}
+                        <div className="space-y-1">
+                          <div className="flex">
+                            <span className="text-blue-400 mr-2">$</span>
+                            <span className="text-gray-300">{getCurrentCommand()}</span>
+                            <span className="text-green-400 ml-2">↵</span>
+                          </div>
+                        </div>
+                        
+                        {/* Page Title */}
+                        <div className="mb-4 mt-4">
+                          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2">
+                            {title}
+                          </h1>
+                          <div className="h-1 w-20 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Scrollable Content Section */}
+                    <div className="flex-1 overflow-y-auto custom-scrollbar px-3 sm:px-4 pb-4">
+                      <div className="text-gray-300 font-mono text-xs sm:text-sm md:text-base">
+                        {children}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

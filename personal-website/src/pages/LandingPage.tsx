@@ -26,6 +26,7 @@ const LandingPage: React.FC = () => {
   const [appAnimationStage, setAppAnimationStage] = useState<'tiny' | 'opened'>('tiny');
   const [processingCommand, setProcessingCommand] = useState(false);
   const [currentProcessingCommand, setCurrentProcessingCommand] = useState('');
+  const [commandHistory, setCommandHistory] = useState<Array<{command: string, output: string}>>([]);
 
   useEffect(() => {
     // Start the smooth opening animation after a brief delay
@@ -113,6 +114,80 @@ const LandingPage: React.FC = () => {
     }
   }, [animationPhase]);
 
+  // Handle interactive commands
+  const handleCommand = (command: string) => {
+    const cmd = command.trim().toLowerCase();
+    
+    // Check if command starts with /
+    if (!cmd.startsWith('/')) {
+      const newHistoryItem = { command: cmd, output: `Command not found: ${cmd}. Commands must start with '/'. Type '/help' for available commands.` };
+      setCommandHistory(prev => [...prev, newHistoryItem]);
+      return;
+    }
+    
+    // Remove the / prefix for processing
+    const actualCmd = cmd.substring(1);
+    
+    // Add command to history
+    const newHistoryItem = { command: cmd, output: '' };
+    
+    switch (actualCmd) {
+      case 'help':
+        newHistoryItem.output = `Available commands:
+• /help - Show this help message
+• /projects - View my projects
+• /resume - View my resume
+• /blog - View my blog
+• /contact - Open contact form
+• /clear - Clear terminal
+• /ls - List available sections
+• /pwd - Show current location
+• /whoami - Show user info`;
+        break;
+        
+      case 'clear':
+        setCommandHistory([]);
+        return;
+        
+      case 'ls':
+        newHistoryItem.output = `Available sections:
+drwxr-xr-x  projects/
+drwxr-xr-x  resume/
+drwxr-xr-x  blog/
+-rwxr-xr-x  contact.sh`;
+        break;
+        
+      case 'pwd':
+        newHistoryItem.output = '/home/feraldy/portfolio';
+        break;
+        
+      case 'whoami':
+        newHistoryItem.output = 'feraldy - Software QA Engineer & Developer';
+        break;
+        
+      case 'projects':
+        navigate('/projects');
+        return;
+        
+      case 'resume':
+        navigate('/resume');
+        return;
+        
+      case 'blog':
+        navigate('/blog');
+        return;
+        
+      case 'contact':
+        setShowContactForm(true);
+        return;
+        
+      default:
+        newHistoryItem.output = `Command not found: ${cmd}. Type '/help' for available commands.`;
+    }
+    
+    setCommandHistory(prev => [...prev, newHistoryItem]);
+  };
+
   // Handle command processing animation
   const handleCommandClick = (command: string, path: string) => {
     setProcessingCommand(true);
@@ -182,14 +257,14 @@ const LandingPage: React.FC = () => {
         <div className="flex items-center justify-center w-full">
           {/* Terminal Window */}
           <div 
-            className={`bg-gray-900 rounded-lg overflow-hidden border border-gray-700 shadow-2xl w-full max-w-4xl mx-auto transition-all duration-1000 ease-out ${
+            className={`bg-gray-900 rounded-lg overflow-hidden border border-gray-700 shadow-2xl w-full max-w-6xl mx-auto transition-all duration-1000 ease-out ${
               appAnimationStage === 'tiny' 
                 ? 'scale-0 opacity-0' 
                 : 'scale-100 opacity-100'
             }`}
             style={{
               transformOrigin: 'center center',
-              height: 'clamp(400px, 70vh, 600px)',
+              height: 'clamp(600px, 85vh, 1000px)',
               filter: appAnimationStage === 'opened'
                 ? 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.6))' 
                 : 'drop-shadow(0 15px 35px rgba(0, 0, 0, 0.4))',
@@ -211,14 +286,14 @@ const LandingPage: React.FC = () => {
             
             {/* Terminal Content */}
             {appAnimationStage === 'opened' && (
-              <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm md:text-base text-gray-300 overflow-hidden flex flex-col" style={{ height: 'calc(100% - 60px)' }}>
+              <div className="flex flex-col h-full" style={{ height: 'calc(100% - 60px)' }}>
               {showTypewriter && (
-                <div className="space-y-2 flex-1 flex flex-col">
+                <div className="flex-1 overflow-y-auto custom-scrollbar">
+                  <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm md:text-base text-gray-300 space-y-2">
                   {/* Initial welcome header */}
                   <div className="pb-2 border-b border-gray-700">
                     <p className="text-green-400">Welcome to Feraldy's Terminal Portfolio v1.0.0</p>
-                    <p className="text-gray-400 text-xs mt-1">Type 'help' for available commands</p>
-                  </div>
+                                           <p className="text-gray-400 text-xs mt-1">Type '/help' for available commands</p>                  </div>
                   
                   {/* Initial prompt with blinking cursor */}
                   {animationPhase === 'initial' && (
@@ -299,19 +374,44 @@ const LandingPage: React.FC = () => {
                        )}                    </div>
                   )}
                   
-                  {/* Navigation prompt */}
-                  {animationPhase === 'navigation' && !processingCommand && (
-                    <div>
-                      <div className="flex">
-                        <span className="text-blue-400 mr-2">$</span>
-                        <span className="relative">
-                          explore
+                   {/* Interactive Terminal */}
+                   {animationPhase === 'navigation' && !processingCommand && (
+                     <div>                      
+                        {/* Command History */}
+                        {commandHistory.map((item, index) => (
+                          <div key={index} className="mb-3">
+                            <div className="flex">
+                              <span className="text-blue-400 mr-2">$</span>
+                              <span className="text-gray-300">{item.command}</span>
+                            </div>
+                            {item.output && (
+                              <div className="pl-4 mt-1 text-gray-300 whitespace-pre-line">
+                                {item.output}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        
+                        {/* Interactive Input */}
+                        <div className="flex items-center mb-4">
+                          <span className="text-blue-400 mr-2">$</span>
+                          <input
+                            type="text"
+                            className="flex-1 bg-transparent text-gray-300 outline-none font-mono"
+                             placeholder="Type a command (e.g., /help, /projects)..."                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                const command = e.currentTarget.value.trim();
+                                if (command) {
+                                  handleCommand(command);
+                                  e.currentTarget.value = '';
+                                }
+                              }
+                            }}
+                          />
                           <span className="animate-pulse text-yellow-400 ml-1 font-bold">|</span>
-                        </span>
-                      </div>
-                      
-                      {/* Navigation links */}
-                      <div className="mt-3 sm:mt-4 pl-2 sm:pl-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                        </div>                       
+                       {/* Navigation links as backup */}                      <div className="mt-3 sm:mt-4 pl-2 sm:pl-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                         <button 
                           onClick={() => handleCommandClick('cd ./projects', '/projects')}
                           className="text-left px-3 sm:px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200 disabled:opacity-50 text-sm sm:text-base"
@@ -328,30 +428,21 @@ const LandingPage: React.FC = () => {
                           <span className="text-yellow-400">cd</span> <span className="text-blue-400">./resume</span>
                         </button>
                         
-                        <button 
-                          onClick={() => handleCommandClick('cd ./photography', '/photography')}
-                          className="text-left px-3 sm:px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200 disabled:opacity-50 text-sm sm:text-base"
-                          disabled={processingCommand}
-                        >
-                          <span className="text-yellow-400">cd</span> <span className="text-blue-400">./photography</span>
-                        </button>
-                        
-                        <button 
-                          onClick={() => handleCommandClick('cd ./blog', '/blog')}
-                          className="text-left px-3 sm:px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200 disabled:opacity-50 text-sm sm:text-base"
-                          disabled={processingCommand}
-                        >
-                          <span className="text-yellow-400">cd</span> <span className="text-blue-400">./blog</span>
-                        </button>
-                        
-                        <button 
-                          onClick={() => setShowContactForm(true)}
-                          className="text-left px-3 sm:px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200 col-span-1 sm:col-span-2 disabled:opacity-50 text-sm sm:text-base"
-                          disabled={processingCommand}
-                        >
-                          <span className="text-yellow-400">run</span> <span className="text-blue-400">./contact.sh</span>
-                        </button>
-                      </div>
+                         <button 
+                           onClick={() => handleCommandClick('cd ./blog', '/blog')}
+                           className="text-left px-3 sm:px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200 disabled:opacity-50 text-sm sm:text-base"
+                           disabled={processingCommand}
+                         >
+                           <span className="text-yellow-400">cd</span> <span className="text-blue-400">./blog</span>
+                         </button>
+                         
+                         <button 
+                           onClick={() => setShowContactForm(true)}
+                           className="text-left px-3 sm:px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200 disabled:opacity-50 text-sm sm:text-base"
+                           disabled={processingCommand}
+                         >
+                           <span className="text-yellow-400">run</span> <span className="text-blue-400">./contact.sh</span>
+                         </button>                      </div>
                     </div>
                   )}
                   
@@ -372,13 +463,13 @@ const LandingPage: React.FC = () => {
                         <span className="text-gray-400">Processing...</span>
                       </div>
                     </div>
-                  )}
-                </div>
-              )}
-              </div>
-            )}
-          </div>
-        </div>
+                   )}
+                   </div>
+                 </div>
+               )}
+               </div>
+             )}
+           </div>        </div>
       </div>
 
       {/* Contact Form Modal */}
