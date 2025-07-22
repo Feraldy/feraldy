@@ -122,7 +122,7 @@ const Resume: React.FC = () => {
     "id": 2,
     "company": "NiceDay Nederland",
     "logo": NiceDayImage,
-    "period": "Dec 2022 - Dec 2023",
+    "period": "Sep 2022 - Dec 2023",
     "location": "Netherlands - Hybrid",
     "roles": [
       {
