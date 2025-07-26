@@ -1,5 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router-dom';
+import { getPageSEO, generateStructuredData, generateCanonicalUrl, generateImageUrl } from '../utils/seoData';
 
 interface SEOProps {
   title?: string;
@@ -10,16 +12,21 @@ interface SEOProps {
   type?: string;
 }
 
-const SEO: React.FC<SEOProps> = ({
-  title = 'Feraldy - Developer, Designer, Creator',
-  description = 'Personal website of Feraldy, a passionate developer creating beautiful, functional, and user-friendly digital experiences.',
-  keywords = ['developer', 'designer', 'creator', 'portfolio', 'react', 'typescript', 'web development'],
-  image = '/og-image.jpg', // Default OG image
-  url = 'https://feraldy.com', // Replace with your actual domain
-  type = 'website'
-}) => {
-  const siteTitle = 'Feraldy';
-  const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
+const SEO: React.FC<SEOProps> = (props) => {
+  const location = useLocation();
+  const pageData = getPageSEO(location.pathname);
+  const structuredData = generateStructuredData(location.pathname);
+  
+  // Use props if provided, otherwise fall back to page data
+  const title = props.title || pageData.title;
+  const description = props.description || pageData.description;
+  const keywords = props.keywords || pageData.keywords;
+  const image = generateImageUrl(props.image || pageData.image || '/og-images/default.jpg');
+  const url = props.url || generateCanonicalUrl(location.pathname);
+  const type = props.type || pageData.type || 'website';
+  
+  const siteTitle = 'Feraldy Nathanael';
+  const fullTitle = title === siteTitle ? title : `${title}`;
   
   return (
     <Helmet>
@@ -27,6 +34,10 @@ const SEO: React.FC<SEOProps> = ({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords.join(', ')} />
+      <meta name="author" content="Feraldy Nathanael" />
+      <meta name="robots" content="index, follow" />
+      <meta name="language" content="English" />
+      <meta name="revisit-after" content="7 days" />
       
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={type} />
@@ -34,6 +45,11 @@ const SEO: React.FC<SEOProps> = ({
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={`${fullTitle} - Preview Image`} />
+      <meta property="og:site_name" content="Feraldy Nathanael Portfolio" />
+      <meta property="og:locale" content="en_US" />
       
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -41,9 +57,23 @@ const SEO: React.FC<SEOProps> = ({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
+      <meta name="twitter:image:alt" content={`${fullTitle} - Preview Image`} />
+      <meta name="twitter:creator" content="@feraldy" />
+      <meta name="twitter:site" content="@feraldy" />
+      
+      {/* Additional meta tags */}
+      <meta name="theme-color" content="#0d1117" />
+      <meta name="msapplication-TileColor" content="#0d1117" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       
       {/* Canonical URL */}
       <link rel="canonical" href={url} />
+      
+      {/* Structured Data */}
+      <script type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </script>
     </Helmet>
   );
 };

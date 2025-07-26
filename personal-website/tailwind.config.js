@@ -13,6 +13,7 @@ export default {
         'slide-in-right': 'slideInRight 0.8s ease-out',
         'typewriter': 'typewriter 3s steps(40) 1s 1 normal both',
         'blink': 'blink 1s infinite',
+        'bounce-gentle': 'bounceGentle 2s ease-in-out infinite',
       },
       keyframes: {
         fadeInUp: {
@@ -177,6 +178,14 @@ export default {
           },
           '100%': {
             transform: 'rotate(360deg)'
+          }
+        },
+        bounceGentle: {
+          '0%, 100%': {
+            transform: 'translateY(0)'
+          },
+          '50%': {
+            transform: 'translateY(-2px)'
           }
         }
       }
