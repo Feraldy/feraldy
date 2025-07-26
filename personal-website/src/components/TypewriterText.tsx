@@ -18,7 +18,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({ texts, delay = 100, del
   const [partialDeleteTarget, setPartialDeleteTarget] = useState<number | null>(null)
   
   // Define typo corrections with partial deletion
-  const typoCorrections = {
+  const typoCorrections: Record<number, { deleteToPosition: number; correctText: string }> = {
     1: { // "Welcome to my persnoal website!" -> "Welcome to my personal website!"
       deleteToPosition: 18, // Delete back to "Welcome to my pers"
       correctText: "Welcome to my personal website!"
@@ -30,7 +30,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({ texts, delay = 100, del
   }
   
   // Define different pause times for typos vs normal text
-  const getPauseTime = (index) => {
+  const getPauseTime = (index: number) => {
     // Shorter pause for typos (when we "realize" the mistake)
     if (index === 1 || index === 3) return 800 // typo texts
     return pauseTime // normal pause time
@@ -92,7 +92,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({ texts, delay = 100, del
     return () => clearTimeout(timeout)
   }, [currentText, isDeleting, currentTextIndex, texts, delay, deleteDelay, pauseTime, isComplete, onComplete, typeOnce, isPaused, partialDeleteTarget])
 
-  const renderStyledText = (text) => {
+  const renderStyledText = (text: string) => {
     // Find the position of "Feraldy" in the target text
     const targetText = texts[currentTextIndex]
     const feraldyIndex = targetText.indexOf("Feraldy")
@@ -121,7 +121,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({ texts, delay = 100, del
   return (
     <span className="relative">
       {renderStyledText(currentText)}
-      <span className="animate-pulse text-yellow-400 ml-1 font-bold">|</span>
+      <span className="terminal-cursor text-yellow-400 ml-1 font-bold">|</span>
     </span>
   )
 }

@@ -86,20 +86,21 @@ const TerminalLayout: React.FC<TerminalLayoutProps> = ({ children, title, comman
                 {contentVisible && (
                   <>
                     {/* Fixed Header Section */}
-                    <div className="p-3 sm:p-4 font-mono text-xs sm:text-sm md:text-base text-gray-300 flex-shrink-0">
+                    <div className="p-3 sm:p-4 terminal-font text-xs sm:text-sm md:text-base text-gray-300 flex-shrink-0">
                       <div className="space-y-2">
                         {/* Initial welcome header */}
                         <div className="pb-2 border-b border-gray-700">
-                          <p className="text-green-400">Welcome to Feraldy's Terminal Portfolio v1.0.0</p>
-                          <p className="text-gray-400 text-xs mt-1">Type 'help' for available commands</p>
+                           <p className="text-green-400">Welcome to Feraldy's Terminal Portfolio v1.0.0</p>                          <p className="text-gray-400 text-xs mt-1">Type 'help' for available commands</p>
                         </div>
                         
                         {/* Command execution */}
                         <div className="space-y-1">
-                          <div className="flex">
-                            <span className="text-blue-400 mr-2">$</span>
-                            <span className="text-gray-300">{getCurrentCommand()}</span>
-                            <span className="text-green-400 ml-2">↵</span>
+                          <div className="flex items-center">
+                            <span className="text-cyan-400">feraldy@portfolio</span>
+                            <span className="text-white">:</span>
+                            <span className="text-blue-400">~</span>
+                            <span className="text-white">$</span>
+                            <span className="text-gray-100 ml-2">{getCurrentCommand()}</span>
                           </div>
                         </div>
                         
@@ -115,7 +116,7 @@ const TerminalLayout: React.FC<TerminalLayoutProps> = ({ children, title, comman
                     
                     {/* Scrollable Content Section */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar px-3 sm:px-4 pb-4">
-                      <div className="text-gray-300 font-mono text-xs sm:text-sm md:text-base">
+                      <div className="text-gray-300 terminal-font text-xs sm:text-sm md:text-base">
                         {children}
                       </div>
                     </div>

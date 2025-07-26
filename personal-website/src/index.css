@@ -55,3 +55,51 @@ html {
 .terminal-bg {
   background: linear-gradient(135deg, #0d1117 0%, #161b22 25%, #21262d 50%, #161b22 75%, #0d1117 100%);
 }
+
+/* Terminal font styling */
+.terminal-font {
+  font-family: 'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  font-feature-settings: 'liga' 1, 'calt' 1;
+  font-variant-ligatures: contextual;
+  line-height: 1.4;
+  letter-spacing: 0.025em;
+}
+
+/* Terminal prompt styling */
+.terminal-prompt {
+  user-select: none;
+}
+
+/* Terminal input styling */
+.terminal-input {
+  caret-color: #fbbf24;
+}
+
+.terminal-input::placeholder {
+  color: #6b7280;
+  opacity: 0.7;
+}
+
+/* Terminal text selection */
+.terminal-font::selection {
+  background-color: #374151;
+  color: #f3f4f6;
+}
+
+/* Terminal command output styling */
+.terminal-output {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Terminal cursor animation */
+@keyframes terminal-cursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.terminal-cursor {
+  animation: terminal-cursor 1.2s infinite;
+  font-size: 1em;
+  line-height: 1;
+}

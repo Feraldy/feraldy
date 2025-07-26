@@ -48,14 +48,20 @@ const Projects: React.FC = () => {
       
       <TerminalLayout title="My Projects">
         {/* Terminal command simulation */}
-        <div className="mb-6 font-mono text-sm">
+        <div className="mb-6 terminal-font text-sm">
           <div className="flex items-center mb-2">
-            <span className="text-blue-400 mr-2">$</span>
-            <span className="text-gray-300">ls -la projects/</span>
-            <span className="text-green-400 ml-2">✓</span>
+            <span className="text-cyan-400">feraldy@portfolio</span>
+            <span className="text-white">:</span>
+            <span className="text-blue-400">~/projects</span>
+            <span className="text-white">$</span>
+            <span className="text-gray-100 ml-2">ls -la</span>
           </div>
           <div className="pl-4 text-gray-400 mb-4">
-            total {projects.length} projects
+            total {projects.length}
+            <br />
+            drwxr-xr-x 2 feraldy feraldy 4096 Jul 22 15:04 .
+            <br />
+            drwxr-xr-x 3 feraldy feraldy 4096 Jul 22 15:04 ..
           </div>
         </div>
 
@@ -67,7 +73,7 @@ const Projects: React.FC = () => {
 
         {/* Projects Grid */}
         <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-12">
-            {projects.map((project, index) => (
+            {projects.map((project) => (
               <div 
                 key={project.id} 
                 className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-yellow-400 transition-all duration-300"
@@ -148,9 +154,12 @@ const Projects: React.FC = () => {
           </p>
            <button
              onClick={() => setShowContactModal(true)}
-             className="text-left w-full max-w-xs px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200"
-           >
-             <span className="text-yellow-400">run</span> <span className="text-blue-400">./contact.sh</span>
+              className="text-left w-full max-w-xs px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200 terminal-font"           >
+             <span className="text-cyan-400">feraldy@portfolio</span>
+             <span className="text-white">:</span>
+             <span className="text-blue-400">~</span>
+             <span className="text-white">$</span>
+             <span className="text-gray-100 ml-2">./contact.sh</span>
            </button>
          </div>
        </TerminalLayout>
