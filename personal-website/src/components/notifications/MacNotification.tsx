@@ -80,7 +80,7 @@ const MacNotification: React.FC<MacNotificationProps> = ({
       /* Mobile positioning - full width with margins */
       right-2 left-2 md:left-auto`}
       style={{
-        top: `${16 + stackIndex * (typeof window !== 'undefined' && window.innerWidth < 768 ? 165 : 180)}px`, // Smaller spacing on mobile
+        top: `${20 + stackIndex * (typeof window !== 'undefined' && window.innerWidth < 768 ? 165 : 180)}px`, // Smaller spacing on mobile
         transitionTimingFunction: isVisible 
           ? 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' // Smoother ease-out
           : 'cubic-bezier(0.55, 0.055, 0.675, 0.19)', // Gentle ease-in

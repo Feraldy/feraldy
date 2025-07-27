@@ -6,6 +6,7 @@ import { funCommands } from './funCommands';
 import { interactiveCommands } from './interactiveCommands';
 import { helpCommand } from './helpCommand';
 import { storyCommand } from './storyCommand';
+import { tabCommands } from './tabCommands';
 
 // Combine all commands
 const allCommands: Command[] = [
@@ -15,7 +16,8 @@ const allCommands: Command[] = [
   ...navigationCommands,
   ...infoCommands,
   ...funCommands,
-  ...interactiveCommands
+  ...interactiveCommands,
+  ...tabCommands
 ];
 
 // Create command registry

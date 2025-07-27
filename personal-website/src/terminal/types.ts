@@ -1,3 +1,11 @@
+export interface TerminalTab {
+  id: string;
+  title: string;
+  type: 'main' | 'resume' | 'projects' | 'blog';
+  content?: any;
+  isActive: boolean;
+}
+
 export interface TerminalContext {
   navigate: (path: string) => void;
   setShowContactForm: (show: boolean) => void;
@@ -5,6 +13,10 @@ export interface TerminalContext {
   setCommandHistory: React.Dispatch<React.SetStateAction<CommandHistoryItem[]>>;
   currentStoryState: string | null;
   setCurrentStoryState: React.Dispatch<React.SetStateAction<string | null>>;
+  tabs?: TerminalTab[];
+  setTabs?: React.Dispatch<React.SetStateAction<TerminalTab[]>>;
+  activeTabId?: string;
+  setActiveTabId?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export interface CommandHistoryItem {
@@ -17,6 +29,10 @@ export interface CommandResult {
   shouldAddToHistory?: boolean;
   shouldNavigate?: string;
   shouldOpenContact?: boolean;
+  shouldOpenTab?: {
+    type: 'resume' | 'projects' | 'blog';
+    title: string;
+  };
 }
 
 export interface Command {

@@ -49,7 +49,7 @@ const TerminalLayout: React.FC<TerminalLayoutProps> = ({ children, title, comman
 
   return (
     <div className="min-h-screen terminal-bg">
-      <div className="min-h-screen flex items-start justify-center px-2 sm:px-4 pt-16 md:pt-20 pb-8">
+      <div className="min-h-screen flex items-start justify-center px-2 sm:px-4 pt-4 md:pt-5 pb-8">
         <div className="flex items-start justify-center w-full">
           {/* Terminal Window */}
           <div 

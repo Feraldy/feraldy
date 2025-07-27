@@ -1,42 +1,51 @@
-import { Command, TerminalContext, CommandResult } from '../types';
+import { Command, CommandResult } from '../types';
 
 export const navigationCommands: Command[] = [
   {
     name: 'projects',
-    description: 'Navigate to projects page',
+    description: 'Open projects in new tab',
     category: 'navigation',
     usage: 'projects',
     aliases: ['cd ./projects', 'cd projects'],
-    execute: (args: string[], context: TerminalContext): CommandResult => {
+    execute: (): CommandResult => {
       return {
-        output: 'Navigating to projects...',
-        shouldNavigate: '/projects'
+        output: 'Opening projects tab...',
+        shouldOpenTab: {
+          type: 'projects',
+          title: 'Projects'
+        }
       };
     }
   },
   {
     name: 'resume',
-    description: 'Navigate to resume page',
+    description: 'Open resume in new tab',
     category: 'navigation',
     usage: 'resume',
-    aliases: ['cd ./resume', 'cd resume'],
-    execute: (args: string[], context: TerminalContext): CommandResult => {
+    aliases: ['cd ./resume', 'cd resume', 'cat ./resume.pdf'],
+    execute: (): CommandResult => {
       return {
-        output: 'Navigating to resume...',
-        shouldNavigate: '/resume'
+        output: 'Opening resume tab...',
+        shouldOpenTab: {
+          type: 'resume',
+          title: 'Resume'
+        }
       };
     }
   },
   {
     name: 'blog',
-    description: 'Navigate to blog page',
+    description: 'Open blog in new tab',
     category: 'navigation',
     usage: 'blog',
     aliases: ['cd ./blog', 'cd blog'],
-    execute: (args: string[], context: TerminalContext): CommandResult => {
+    execute: (): CommandResult => {
       return {
-        output: 'Navigating to blog...',
-        shouldNavigate: '/blog'
+        output: 'Opening blog tab...',
+        shouldOpenTab: {
+          type: 'blog',
+          title: 'Blog'
+        }
       };
     }
   },
@@ -46,7 +55,7 @@ export const navigationCommands: Command[] = [
     category: 'navigation',
     usage: 'contact',
     aliases: ['./contact.sh'],
-    execute: (args: string[], context: TerminalContext): CommandResult => {
+    execute: (): CommandResult => {
       return {
         output: 'Opening contact form...',
         shouldOpenContact: true

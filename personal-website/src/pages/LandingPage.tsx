@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TypewriterText from '../components/TypewriterText';
-import Navbar from '../components/Navbar';
+
 import SEO from '../components/SEO';
 import NotificationManager from '../components/notifications/NotificationManager';
 import CommandSuggestions from '../components/terminal/CommandSuggestions';
 import DidYouMean from '../components/terminal/DidYouMean';
+import TabManager from '../components/terminal/TabManager';
+import ResumeTabContent from '../components/terminal/tabs/ResumeTabContent';
+import ProjectsTabContent from '../components/terminal/tabs/ProjectsTabContent';
+import BlogTabContent from '../components/terminal/tabs/BlogTabContent';
 // import HelpHints from '../components/terminal/HelpHints'; // Disabled to reduce UI clutter
 import { 
   createCommandRegistry, 
@@ -13,7 +17,7 @@ import {
   getCommandSuggestions, 
   getDidYouMeanSuggestions 
 } from '../terminal/commands';
-import { TerminalContext, CommandHistoryItem } from '../terminal/types';
+import { TerminalContext, CommandHistoryItem, TerminalTab } from '../terminal/types';
 
 interface FormData {
   name: string;
@@ -43,7 +47,7 @@ const LandingPage: React.FC = () => {
   
   // New state for enhanced features
   const [commandRegistry] = useState(() => createCommandRegistry());
-  const [currentInput, setCurrentInput] = useState('');
+  const [_currentInput, setCurrentInput] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [highlightedSuggestion, setHighlightedSuggestion] = useState(0);
@@ -51,6 +55,13 @@ const LandingPage: React.FC = () => {
   const [invalidCommands, setInvalidCommands] = useState(0);
   const [exploredCommands, setExploredCommands] = useState<Set<string>>(new Set());
   const [lastInvalidCommand, setLastInvalidCommand] = useState<string>('');
+
+  // Tab management state
+  const [tabs, setTabs] = useState<TerminalTab[]>([
+    { id: 'main', title: 'Terminal', type: 'main', isActive: true }
+  ]);
+  const [activeTabId, setActiveTabId] = useState('main');
+  const hasAutoOpenedTabs = useRef(false);
 
   useEffect(() => {
     // Check if user has seen animation before
@@ -76,6 +87,38 @@ const LandingPage: React.FC = () => {
         }, 1000);
       }
     }, 2500);
+
+    // Handle URL hash for terminal tabs
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1); // Remove #
+      if (hash.startsWith('terminal-')) {
+        const tabType = hash.replace('terminal-', '') as 'resume' | 'projects' | 'blog';
+        if (['resume', 'projects', 'blog'].includes(tabType)) {
+          // Check if we already have a tab of this type and just switch to it
+          const existingTab = tabs.find(tab => tab.type === tabType);
+          if (existingTab) {
+            // Just switch to existing tab without creating new one
+            setTabs(prevTabs => 
+              prevTabs.map(tab => ({ ...tab, isActive: tab.id === existingTab.id }))
+            );
+            setActiveTabId(existingTab.id);
+          } else {
+            // Only create new tab if it doesn't exist
+            handleOpenTab(tabType, tabType.charAt(0).toUpperCase() + tabType.slice(1));
+          }
+        }
+      }
+    };
+
+    // Check initial hash
+    handleHashChange();
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+    
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
   // Welcome text lines
@@ -193,6 +236,46 @@ const LandingPage: React.FC = () => {
     }
   }, [animationPhase, animationSkipped]);
 
+  // Auto-open tabs when navigation phase is reached
+  useEffect(() => {
+    if (animationPhase === 'navigation' && !hasAutoOpenedTabs.current) {
+      // Check if we already have tabs other than main or if there's a hash in URL
+      const hasOtherTabs = tabs.some(tab => tab.type !== 'main');
+      const hasHashInUrl = window.location.hash.startsWith('#terminal-');
+      
+      if (!hasOtherTabs && !hasHashInUrl) {
+        hasAutoOpenedTabs.current = true;
+        
+        // Only auto-open if we just have the main tab and no hash-based navigation
+        const autoOpenTabs = [
+          { type: 'resume' as const, title: 'Resume' },
+          { type: 'projects' as const, title: 'Projects' },
+          { type: 'blog' as const, title: 'Blog' }
+        ];
+
+        // Create all tabs at once to avoid race conditions
+        setTimeout(() => {
+          setTabs(prevTabs => {
+            const newTabs = autoOpenTabs.map((tabInfo, index) => ({
+              id: `${tabInfo.type}-${Date.now()}-${index}`,
+              title: tabInfo.title,
+              type: tabInfo.type,
+              isActive: false
+            }));
+
+            return [
+              ...prevTabs.map(tab => ({ ...tab, isActive: tab.id === 'main' })),
+              ...newTabs
+            ];
+          });
+          
+          // Clear hash after creating tabs
+          window.location.hash = '';
+        }, 300);
+      }
+    }
+  }, [animationPhase]);
+
   // Handle input changes for autocomplete
   const handleInputChange = (value: string) => {
     setCurrentInput(value);
@@ -228,7 +311,11 @@ const LandingPage: React.FC = () => {
       commandHistory,
       setCommandHistory,
       currentStoryState,
-      setCurrentStoryState
+      setCurrentStoryState,
+      tabs,
+      setTabs,
+      activeTabId,
+      setActiveTabId
     };
 
     // Find and execute command
@@ -247,6 +334,9 @@ const LandingPage: React.FC = () => {
         }
         if (result.shouldOpenContact) {
           setShowContactForm(true);
+        }
+        if (result.shouldOpenTab) {
+          handleOpenTab(result.shouldOpenTab.type, result.shouldOpenTab.title);
         }
       } catch (error) {
         newHistoryItem.output = `Error executing command: ${error}`;
@@ -334,6 +424,93 @@ const LandingPage: React.FC = () => {
     executeCommand(suggestion);
   };
 
+  // Tab management functions
+  const handleOpenTab = (type: 'resume' | 'projects' | 'blog', title: string) => {
+    setTabs(prevTabs => {
+      // Check if tab already exists using the current state
+      const existingTab = prevTabs.find(tab => tab.type === type);
+      if (existingTab) {
+        // Switch to existing tab
+        setActiveTabId(existingTab.id);
+        window.location.hash = `terminal-${type}`;
+        return prevTabs.map(tab => ({ ...tab, isActive: tab.id === existingTab.id }));
+      }
+
+      // Create new tab only if it doesn't exist
+      const tabId = `${type}-${Date.now()}`;
+      const newTab: TerminalTab = {
+        id: tabId,
+        title,
+        type,
+        isActive: true
+      };
+
+      setActiveTabId(tabId);
+      window.location.hash = `terminal-${type}`;
+      
+      // Return new tabs array with existing tabs inactive and new tab active
+      return [
+        ...prevTabs.map(tab => ({ ...tab, isActive: false })),
+        newTab
+      ];
+    });
+  };
+
+  const handleTabClick = (tabId: string) => {
+    const targetTab = tabs.find(tab => tab.id === tabId);
+    setTabs(prevTabs => 
+      prevTabs.map(tab => ({ ...tab, isActive: tab.id === tabId }))
+    );
+    setActiveTabId(tabId);
+    
+    // Update URL hash
+    if (targetTab && targetTab.type !== 'main') {
+      window.location.hash = `terminal-${targetTab.type}`;
+    } else {
+      window.location.hash = '';
+    }
+  };
+
+  const handleTabClose = (tabId: string) => {
+    if (tabId === 'main') return; // Can't close main tab
+
+    setTabs(prevTabs => {
+      const filteredTabs = prevTabs.filter(tab => tab.id !== tabId);
+      
+      // If we're closing the active tab, switch to main
+      if (activeTabId === tabId) {
+        const updatedTabs = filteredTabs.map(tab => ({
+          ...tab,
+          isActive: tab.id === 'main'
+        }));
+        setActiveTabId('main');
+        window.location.hash = ''; // Clear hash when returning to main
+        return updatedTabs;
+      }
+      
+      return filteredTabs;
+    });
+  };
+
+  // Get current tab content
+  const getCurrentTabContent = () => {
+    const activeTab = tabs.find(tab => tab.isActive);
+    if (!activeTab || activeTab.type === 'main') {
+      return null;
+    }
+
+    switch (activeTab.type) {
+      case 'resume':
+        return <ResumeTabContent />;
+      case 'projects':
+        return <ProjectsTabContent />;
+      case 'blog':
+        return <BlogTabContent />;
+      default:
+        return null;
+    }
+  };
+
   const handleFormInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
@@ -382,7 +559,6 @@ const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-900 via-neutral-800 to-neutral-900">
       <SEO />
-      <Navbar />
 
       {/* Notification Manager */}
       <NotificationManager
@@ -401,7 +577,7 @@ const LandingPage: React.FC = () => {
         isVisible={animationPhase === 'navigation'}
       /> */}
 
-      <div className="min-h-screen flex items-center justify-center px-2 sm:px-4 pt-16 md:pt-20">
+      <div className="min-h-screen flex items-center justify-center px-2 sm:px-4 py-4">
         <div className="flex items-center justify-center w-full">
           {/* Terminal Window */}
           <div 
@@ -412,7 +588,7 @@ const LandingPage: React.FC = () => {
             }`}
             style={{
               transformOrigin: 'center center',
-              height: 'clamp(600px, 85vh, 1000px)',
+              height: 'clamp(700px, 95vh, 1200px)',
               filter: appAnimationStage === 'opened'
                 ? 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.6))' 
                 : 'drop-shadow(0 15px 35px rgba(0, 0, 0, 0.4))',
@@ -432,10 +608,24 @@ const LandingPage: React.FC = () => {
               </div>
             )}
             
+            {/* Tab Manager */}
+            {appAnimationStage !== 'tiny' && (
+              <TabManager
+                tabs={tabs}
+                activeTabId={activeTabId}
+                onTabClick={handleTabClick}
+                onTabClose={handleTabClose}
+              />
+            )}
+            
             {/* Terminal Content */}
             {appAnimationStage === 'opened' && (
-              <div className="flex flex-col h-full" style={{ height: 'calc(100% - 60px)' }}>
-                {showTypewriter && (
+              <div className="flex flex-col h-full" style={{ height: tabs.length > 1 ? 'calc(100% - 100px)' : 'calc(100% - 60px)' }}>
+                {getCurrentTabContent() ? (
+                  <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    {getCurrentTabContent()}
+                  </div>
+                ) : showTypewriter && (
                   <div className="flex-1 overflow-y-auto custom-scrollbar">
                     <div className="p-3 sm:p-4 terminal-font text-xs sm:text-sm md:text-base text-gray-300 space-y-2">
                       {/* Initial welcome header */}
@@ -619,11 +809,11 @@ const LandingPage: React.FC = () => {
                           </div>
                         </div>
                       )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
+                     </div>
+                   </div>
+                 )}
+               </div>
+             )}
           </div>
         </div>
       </div>
