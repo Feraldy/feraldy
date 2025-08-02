@@ -6,13 +6,17 @@ interface TabManagerProps {
   activeTabId: string;
   onTabClick: (tabId: string) => void;
   onTabClose: (tabId: string) => void;
+  isLoading: boolean;
+  loadingTabId: string | null;
 }
 
 const TabManager: React.FC<TabManagerProps> = ({
   tabs,
   activeTabId: _activeTabId,
   onTabClick,
-  onTabClose
+  onTabClose,
+  isLoading,
+  loadingTabId,
 }) => {
   if (tabs.length <= 1) return null;
 
@@ -21,21 +25,30 @@ const TabManager: React.FC<TabManagerProps> = ({
       {tabs.map((tab) => (
         <div
           key={tab.id}
-          className={`flex items-center space-x-2 px-3 py-1 rounded-t-md cursor-pointer transition-colors duration-200 ${
+          className={`flex items-center space-x-2 px-3 py-1 rounded-t-md transition-colors duration-200 ${
             tab.isActive
               ? 'bg-gray-900 text-white border-t border-l border-r border-gray-700'
               : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-          }`}
-          onClick={() => onTabClick(tab.id)}
+          } ${tab.disabled ? 'cursor-default' : 'cursor-pointer'}`}
+          onClick={() => !tab.disabled && onTabClick(tab.id)}
         >
           <span className="text-sm font-mono whitespace-nowrap">{tab.title}</span>
+          {isLoading && loadingTabId === tab.id && (
+            <div className="w-3 h-3 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+          )}
           {tab.type !== 'main' && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onTabClose(tab.id);
+                if (!tab.disabled) {
+                  onTabClose(tab.id);
+                }
               }}
-              className="text-gray-400 hover:text-white transition-colors duration-200"
+              className={`transition-colors duration-200 ${
+                tab.disabled 
+                  ? 'text-gray-400 cursor-default' 
+                  : 'text-gray-400 hover:text-white cursor-pointer'
+              }`}
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -9,3 +9,9 @@ declare module "*.md" {
   export default content;
 }
 declare module "*.pdf";
+
+declare global {
+  interface Window {
+    Buffer: any;
+  }
+}

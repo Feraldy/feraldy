@@ -6,7 +6,6 @@ interface MacNotificationProps {
   onAction: (action: NotificationAction) => void;
   onDismiss: () => void;
   isVisible: boolean;
-  stackIndex?: number;
 }
 
 const MacNotification: React.FC<MacNotificationProps> = ({
@@ -14,7 +13,6 @@ const MacNotification: React.FC<MacNotificationProps> = ({
   onAction,
   onDismiss,
   isVisible,
-  stackIndex = 0
 }) => {
   const [progress, setProgress] = useState(100);
   const [isPaused, setIsPaused] = useState(false);
@@ -80,7 +78,7 @@ const MacNotification: React.FC<MacNotificationProps> = ({
       /* Mobile positioning - full width with margins */
       right-2 left-2 md:left-auto`}
       style={{
-        top: `${20 + stackIndex * (typeof window !== 'undefined' && window.innerWidth < 768 ? 165 : 180)}px`, // Smaller spacing on mobile
+        top: '1.25rem',
         transitionTimingFunction: isVisible 
           ? 'cubic-bezier(0.25, 0.46, 0.45, 0.94)' // Smoother ease-out
           : 'cubic-bezier(0.55, 0.055, 0.675, 0.19)', // Gentle ease-in

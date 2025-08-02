@@ -3,7 +3,11 @@ import ContactModal from '../../ContactModal';
 import WellBalanceImage from '../../../assets/WellBalance.png';
 import CoffeeWithDyImage from '../../../assets/CoffeeWIthDy.png';
 
-const ProjectsTabContent: React.FC = () => {
+interface ProjectsTabContentProps {
+  onBlogStoryClick?: (storySlug: string) => void;
+}
+
+const ProjectsTabContent: React.FC<ProjectsTabContentProps> = ({ onBlogStoryClick }) => {
   const [showContactModal, setShowContactModal] = useState(false);
 
   const projects = [
@@ -16,7 +20,8 @@ const ProjectsTabContent: React.FC = () => {
       liveUrl: "https://well-balance.vercel.app",
       githubUrl: "#",
       status: "Active",
-      image: WellBalanceImage
+      image: WellBalanceImage,
+      storySlug: "well-balance-story"
     },
     {
       id: 2,
@@ -27,7 +32,8 @@ const ProjectsTabContent: React.FC = () => {
       liveUrl: "https://coffeewith-dy.vercel.app",
       githubUrl: "#",
       status: "Active",
-      image: CoffeeWithDyImage
+      image: CoffeeWithDyImage,
+      storySlug: "coffee-with-dy-story"
     }
   ];
 
@@ -105,7 +111,7 @@ const ProjectsTabContent: React.FC = () => {
               </div>
 
               {/* Project Links */}
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <a
                   href={project.liveUrl}
                   target="_blank"
@@ -114,6 +120,12 @@ const ProjectsTabContent: React.FC = () => {
                 >
                   View Live
                 </a>
+                <button
+                  onClick={() => onBlogStoryClick?.(project.storySlug)}
+                  className="flex-1 border border-purple-400 text-purple-400 text-center py-2 rounded font-semibold hover:bg-purple-400 hover:text-gray-900 transition-all duration-300"
+                >
+                  Read Story
+                </button>
                 <a
                   href={project.githubUrl}
                   target="_blank"

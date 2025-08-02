@@ -50,7 +50,7 @@ export const notificationTriggers: NotificationTrigger[] = [
       message: 'New here? Try typing "help" or click below to explore my work',
       actions: [
         { label: 'Show Help', type: 'command', value: 'help' },
-        { label: 'View Projects', type: 'route', value: '/projects' }
+        { label: 'View Projects', type: 'command', value: 'projects' }
       ],
       icon: '👋',
       duration: 8000,
@@ -162,7 +162,7 @@ export const notificationTriggers: NotificationTrigger[] = [
       title: 'Still exploring?',
       message: 'Try "projects" for my work, or "story" for an interactive experience',
       actions: [
-        { label: 'View Projects', type: 'route', value: '/projects' },
+        { label: 'View Projects', type: 'command', value: 'projects' },
         { label: 'Interactive Story', type: 'command', value: 'story' }
       ],
       icon: '💡',
@@ -201,7 +201,7 @@ export const notificationTriggers: NotificationTrigger[] = [
       title: 'Terminal Explorer! 🎉',
       message: 'You\'ve discovered the terminal! Ready to see my professional work?',
       actions: [
-        { label: 'View Projects', type: 'route', value: '/projects' },
+        { label: 'View Projects', type: 'command', value: 'projects' },
         { label: 'Download Resume', type: 'action', value: 'downloadResume' }
       ],
       icon: '🚀',
@@ -242,8 +242,8 @@ export const notificationTriggers: NotificationTrigger[] = [
       title: 'Story Explorer!',
       message: 'You completed the interactive story! Want to see my real career journey?',
       actions: [
-        { label: 'View Resume', type: 'route', value: '/resume' },
-        { label: 'See Projects', type: 'route', value: '/projects' }
+        { label: 'View Resume', type: 'command', value: 'resume' },
+        { label: 'See Projects', type: 'command', value: 'projects' }
       ],
       icon: '📖',
       duration: 10000,

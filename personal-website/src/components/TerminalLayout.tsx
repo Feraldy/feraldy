@@ -40,7 +40,6 @@ const TerminalLayout: React.FC<TerminalLayoutProps> = ({ children, title, comman
     const path = location.pathname;
     switch (path) {
       case '/projects': return 'cd ./projects && ls -la';
-      case '/resume': return 'cat ./resume.pdf';
       case '/photography': return 'cd ./photography && ls -la';
       case '/blog': return 'cd ./blog && ls -la';
       default: return 'pwd';

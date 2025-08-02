@@ -1,3 +1,11 @@
+---
+title: "Welcome to My Blog"
+slug: "welcome"
+excerpt: "Welcome to my personal blog! This is where I'll share my thoughts on development, tools, and technology."
+date: "2025-01-19"
+category: "blog-post"
+---
+
 # Welcome to My Blog
 
 Welcome to my personal blog! This is where I'll share my thoughts on development, tools, and technology.

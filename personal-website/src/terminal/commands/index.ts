@@ -4,9 +4,12 @@ import { navigationCommands } from './navigationCommands';
 import { infoCommands } from './infoCommands';
 import { funCommands } from './funCommands';
 import { interactiveCommands } from './interactiveCommands';
+import { interactiveCommands2 } from './interactiveCommands2';
 import { helpCommand } from './helpCommand';
 import { storyCommand } from './storyCommand';
 import { tabCommands } from './tabCommands';
+import { utilityCommands } from './utilityCommands';
+import { personalCommands } from './personalCommands';
 
 // Combine all commands
 const allCommands: Command[] = [
@@ -17,6 +20,9 @@ const allCommands: Command[] = [
   ...infoCommands,
   ...funCommands,
   ...interactiveCommands,
+  ...interactiveCommands2,
+  ...utilityCommands,
+  ...personalCommands,
   ...tabCommands
 ];
 

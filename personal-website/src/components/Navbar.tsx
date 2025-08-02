@@ -8,12 +8,11 @@ const Navbar: React.FC = () => {
   const [lastScrollY, setLastScrollY] = useState(0)
   
   const navItems = [
-    { path: '/resume', label: 'Resume' },
     { path: '/projects', label: 'Projects' },
     { path: '/blog', label: 'Blog' }
   ]
 
-  const isActive = (path) => {
+  const isActive = (path: string) => {
     if (path === '/') {
       return location.pathname === '/'
     }
@@ -22,7 +21,7 @@ const Navbar: React.FC = () => {
 
   // Auto-hide after 3 seconds of inactivity
   useEffect(() => {
-    let hideTimer
+    let hideTimer: NodeJS.Timeout
 
     const resetTimer = () => {
       setIsVisible(true)

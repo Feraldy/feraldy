@@ -4,6 +4,7 @@ export interface TerminalTab {
   type: 'main' | 'resume' | 'projects' | 'blog';
   content?: any;
   isActive: boolean;
+  disabled?: boolean;
 }
 
 export interface TerminalContext {

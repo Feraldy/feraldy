@@ -199,8 +199,8 @@ const NotificationManager: React.FC<NotificationManagerProps> = ({
         onOpenContact?.();
         break;
       case 'downloadResume':
-        // Trigger resume download
-        window.open('/resume', '_blank');
+        // Trigger resume command in terminal
+        onExecuteCommand?.('resume');
         break;
       case 'startTour':
         // Could implement a guided tour
@@ -208,7 +208,7 @@ const NotificationManager: React.FC<NotificationManagerProps> = ({
         break;
       case 'showMobileMenu':
         // Could show a mobile-friendly navigation
-        navigate('/projects');
+        onExecuteCommand?.('projects');
         break;
       case 'dismiss':
         // Just dismiss
@@ -240,14 +240,13 @@ const NotificationManager: React.FC<NotificationManagerProps> = ({
 
   return (
     <>
-      {activeNotifications.map((activeNotification, index) => (
+      {activeNotifications.map((activeNotification) => (
         <MacNotification
           key={activeNotification.id}
           notification={activeNotification.notification}
           onAction={(action) => handleAction(activeNotification.id, action)}
           onDismiss={() => handleDismiss(activeNotification.id)}
           isVisible={activeNotification.isVisible}
-          stackIndex={index}
         />
       ))}
     </>

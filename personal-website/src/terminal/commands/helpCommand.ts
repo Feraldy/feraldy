@@ -1,4 +1,5 @@
-import { Command, TerminalContext, CommandResult } from '../types';
+import { Command, CommandResult } from '../types';
+import { getCommandsByCategory } from './commandUtils';
 
 export const helpCommand: Command = {
   name: 'help',
@@ -9,119 +10,86 @@ export const helpCommand: Command = {
   execute: (args: string[]): CommandResult => {
     const category = args[0]?.toLowerCase();
     
+    // Helper function to format command name with usage
+    const formatCommand = (cmd: Command): string => {
+      const usage = cmd.usage || cmd.name;
+      const maxLength = 20;
+      const padding = '&nbsp;'.repeat(Math.max(1, maxLength - usage.length));
+      return `<span class="text-yellow-400">${usage}</span>${padding}- ${cmd.description}`;
+    };
+    
     if (category === 'fun') {
+      const funCommands = getCommandsByCategory('fun').sort((a, b) => a.name.localeCompare(b.name));
       return {
-        output: `Fun & Interactive Commands:
-  <span class="text-yellow-400">choose [opts]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Pick randomly from options
-  <span class="text-yellow-400">compliment</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Get a positive message
-  <span class="text-yellow-400">dadjoke</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Classic dad humor
-  <span class="text-yellow-400">fortune</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Programming quotes
-  <span class="text-yellow-400">fortunecookie</span>&nbsp;&nbsp;&nbsp;&nbsp;- Fortune cookie wisdom
-  <span class="text-yellow-400">hack</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Simulate hacking sequence
-  <span class="text-yellow-400">insult</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Playful roasts
-  <span class="text-yellow-400">joke</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Random programming jokes
-  <span class="text-yellow-400">matrix</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Enter the Matrix
-  <span class="text-yellow-400">morse [text]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Convert to Morse code
-  <span class="text-yellow-400">roll [X]d[Y]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Roll virtual dice
-  <span class="text-yellow-400">secret</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Find hidden surprises
-  <span class="text-yellow-400">story</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Interactive story
-  <span class="text-yellow-400">tarot</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Mystical card reading
-  <span class="text-yellow-400">trivia</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Tech quiz questions
-  <span class="text-yellow-400">weather</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show weather conditions`
+        output: `Fun & Interactive Commands:\n${funCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}`
       };
     }
     
     if (category === 'navigation') {
+      const navCommands = getCommandsByCategory('navigation').sort((a, b) => a.name.localeCompare(b.name));
       return {
-        output: `Navigation Commands:
-  <span class="text-yellow-400">blog</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Navigate to blog page
-  <span class="text-yellow-400">contact</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Open contact form
-  <span class="text-yellow-400">projects</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Navigate to projects page
-  <span class="text-yellow-400">resume</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Navigate to resume page`
+        output: `Navigation Commands:\n${navCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}`
       };
     }
     
     if (category === 'system') {
+      const systemCommands = getCommandsByCategory('system').sort((a, b) => a.name.localeCompare(b.name));
       return {
-        output: `System Commands:
-  <span class="text-yellow-400">cal</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show calendar
-  <span class="text-yellow-400">clear</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Clear the terminal screen
-  <span class="text-yellow-400">date</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show current date and time
-  <span class="text-yellow-400">df</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show filesystem usage
-  <span class="text-yellow-400">ls</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- List files and directories
-  <span class="text-yellow-400">ping</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show social links
-  <span class="text-yellow-400">ps</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show running processes
-  <span class="text-yellow-400">pwd</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Print working directory
-  <span class="text-yellow-400">uptime</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show system uptime
-  <span class="text-yellow-400">version</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show version
-  <span class="text-yellow-400">whoami</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show current user info`
+        output: `System Commands:\n${systemCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}`
       };
     }
     
     if (category === 'info') {
+      const infoCommands = getCommandsByCategory('info').sort((a, b) => a.name.localeCompare(b.name));
       return {
-        output: `Information Commands:
-  <span class="text-yellow-400">dy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show personal info menu
-  <span class="text-yellow-400">dy --history</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's history
-  <span class="text-yellow-400">dy --tree</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's skill tree
-  <span class="text-yellow-400">dy --skills</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's skills & expertise
-  <span class="text-yellow-400">dy --achievements</span>&nbsp;&nbsp;- Show feraldy's achievements
-  <span class="text-yellow-400">dy --top</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show top skills & projects
-  <span class="text-yellow-400">manual</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show user manual
-  <span class="text-yellow-400">mood</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show current mood`
+        output: `Information Commands:\n${infoCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}`
+      };
+    }
+    
+    if (category === 'interactive') {
+      const interactiveCommands = getCommandsByCategory('interactive').sort((a, b) => a.name.localeCompare(b.name));
+      return {
+        output: `Interactive Commands:\n${interactiveCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}`
       };
     }
     
     // Default help - show all categories
+    const systemCommands = getCommandsByCategory('system').sort((a, b) => a.name.localeCompare(b.name));
+    const funCommands = getCommandsByCategory('fun').sort((a, b) => a.name.localeCompare(b.name));
+    const interactiveCommands = getCommandsByCategory('interactive').sort((a, b) => a.name.localeCompare(b.name));
+    const infoCommands = getCommandsByCategory('info').sort((a, b) => a.name.localeCompare(b.name));
+    const navCommands = getCommandsByCategory('navigation').sort((a, b) => a.name.localeCompare(b.name));
+    
+    // Get some essential commands for the general section
+    const essentialCommands = ['clear', 'help', 'ls', 'pwd', 'whoami', 'version'];
+    const generalCommands = systemCommands.filter(cmd => essentialCommands.includes(cmd.name));
+    
     return {
       output: `General Commands:
-  <span class="text-yellow-400">clear</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Clear the terminal screen
-  <span class="text-yellow-400">dy</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show personal info menu
-  <span class="text-yellow-400">help</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show this help message
-  <span class="text-yellow-400">ls</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- List files and directories
-  <span class="text-yellow-400">manual</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show user manual
-  <span class="text-yellow-400">pwd</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Print working directory
-  <span class="text-yellow-400">version</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show version
-  <span class="text-yellow-400">whoami</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show current user info
+${generalCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}
 
 System Commands:
-  <span class="text-yellow-400">cal</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show calendar
-  <span class="text-yellow-400">date</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show current date and time
-  <span class="text-yellow-400">df</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show filesystem usage
-  <span class="text-yellow-400">ping</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show social links
-  <span class="text-yellow-400">ps</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show running processes
-  <span class="text-yellow-400">uptime</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show system uptime
+${systemCommands.filter(cmd => !essentialCommands.includes(cmd.name)).map(cmd => `  ${formatCommand(cmd)}`).join('\n')}
 
 Fun & Interactive:
-  <span class="text-yellow-400">choose [opts]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Pick randomly from options
-  <span class="text-yellow-400">compliment</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Get a positive message
-  <span class="text-yellow-400">dadjoke</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Classic dad humor
-  <span class="text-yellow-400">fortune</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Programming quotes
-  <span class="text-yellow-400">fortunecookie</span>&nbsp;&nbsp;&nbsp;&nbsp;- Fortune cookie wisdom
-  <span class="text-yellow-400">hack</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Simulate hacking sequence
-  <span class="text-yellow-400">insult</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Playful roasts
-  <span class="text-yellow-400">joke</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Random programming jokes
-  <span class="text-yellow-400">matrix</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Enter the Matrix
-  <span class="text-yellow-400">mood</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show current mood
-  <span class="text-yellow-400">morse [text]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Convert to Morse code
-  <span class="text-yellow-400">roll [X]d[Y]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Roll virtual dice
-  <span class="text-yellow-400">secret</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Find hidden surprises
-  <span class="text-yellow-400">story [choice]</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Interactive career journey
-  <span class="text-yellow-400">tarot</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Mystical card reading
-  <span class="text-yellow-400">trivia</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Tech quiz questions
-  <span class="text-yellow-400">weather</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show weather conditions
+${funCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}
+
+Interactive Tools:
+${interactiveCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}
+
+Information:
+${infoCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}
 
 Navigation:
-  <span class="text-yellow-400">blog</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Navigate to blog page
-  <span class="text-yellow-400">contact</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Open contact form
-  <span class="text-yellow-400">projects</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Navigate to projects page
-  <span class="text-yellow-400">resume</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Navigate to resume page
+${navCommands.map(cmd => `  ${formatCommand(cmd)}`).join('\n')}
 
 <span class="text-green-400">💡 Tips:</span>
 • Try "help [category]" for specific command groups (e.g., "help fun")
 • Use "dy" to explore my professional background
-• Try "hack", "secret", or "roll 2d6" for some fun!
-• Type "story" for an interactive career journey`
+• Try "coffee-order" or "playlist" to see my preferences
+• Check "bucket-list" to see my personal and professional goals
+• Try "typing-test" to test your coding speed
+• Type "performance" to see website metrics`
     };
   }
 };

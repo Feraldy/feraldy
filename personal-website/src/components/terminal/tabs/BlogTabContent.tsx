@@ -1,103 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { BlogPost, getBlogPostBySlug, initializeBlogPosts } from '../../../utils/markdownLoader';
 
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  date: string;
-  filename: string;
-  content?: string;
+interface BlogTabContentProps {
+  selectedStory?: string | null;
 }
 
-const BlogTabContent: React.FC = () => {
+const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory }) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [postContent, setPostContent] = useState<string>('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadBlogPosts();
   }, []);
 
+  useEffect(() => {
+    if (selectedStory && posts.length > 0) {
+      const post = getBlogPostBySlug(selectedStory);
+      if (post) {
+        setSelectedPost(post);
+      }
+    }
+  }, [selectedStory, posts]);
+
   const loadBlogPosts = async () => {
-    const blogPosts = [
-      {
-        id: 1,
-        title: "Welcome to My Blog",
-        excerpt: "Welcome to my personal blog! This is where I'll share my thoughts on development, tools, and technology.",
-        date: "2025-01-19",
-        filename: "welcome.md"
-      }
-    ];
-    setPosts(blogPosts);
-  };
-
-  const loadPostContent = async (filename: string) => {
     try {
-      if (filename === 'welcome.md') {
-        const welcomeContent = `# Welcome to My Blog
-
-Welcome to my personal blog! This is where I'll share my thoughts on development, tools, and technology.
-
-## Getting Started
-
-This blog supports **Markdown** formatting, so I can easily write posts with:
-
-- **Bold text**
-- *Italic text*
-- \`Code snippets\`
-- Links and more!
-
-### Code Example
-
-\`\`\`javascript
-function greet(name) {
-  return \`Hello, \${name}!\`;
-}
-
-console.log(greet('World'));
-\`\`\`
-
-Stay tuned for more posts about my projects and development journey!
-
----
-
-*Published: January 2025*`;
-        
-        setPostContent(welcomeContent);
-        return;
-      }
-      
-      try {
-        const response = await fetch(`/src/blog-posts/${filename}`);
-        if (response.ok) {
-          const content = await response.text();
-          setPostContent(content);
-        } else {
-          setPostContent(`# ${selectedPost?.title}\n\nContent coming soon...`);
-        }
-      } catch (error) {
-        console.error('Error fetching post:', error);
-        setPostContent(`# ${selectedPost?.title}\n\nError loading post content.`);
-      }
+      console.log('Loading blog posts...');
+      setLoading(true);
+      const blogPosts = await initializeBlogPosts();
+      console.log('Blog posts loaded:', blogPosts);
+      setPosts(blogPosts);
     } catch (error) {
-      console.error('Error in loadPostContent:', error);
-      setPostContent(`# ${selectedPost?.title}\n\nError loading post content.`);
+      console.error('Error loading blog posts:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handlePostClick = (post: BlogPost) => {
     setSelectedPost(post);
-    if (post.content) {
-      setPostContent(post.content);
-    } else {
-      loadPostContent(post.filename);
-    }
   };
 
   const handleBackToList = () => {
     setSelectedPost(null);
-    setPostContent('');
+  };
+
+  const getCategoryBadge = (category: string) => {
+    if (category === 'project-story') {
+      return (
+        <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded">
+          Project Story
+        </span>
+      );
+    }
+    return (
+      <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded">
+        Blog Post
+      </span>
+    );
   };
 
   if (selectedPost) {
@@ -109,12 +70,13 @@ Stay tuned for more posts about my projects and development journey!
             <span className="text-gray-300">head -n 1 {selectedPost.filename}</span>
             <span className="text-green-400 ml-2">✓</span>
           </div>
-          <div className="pl-4 text-gray-300 mb-4">
-            Published: {new Date(selectedPost.date).toLocaleDateString('en-US', {
+          <div className="pl-4 text-gray-300 mb-4 flex items-center gap-4">
+            <span>Published: {new Date(selectedPost.date).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric'
-            })}
+            })}</span>
+            {getCategoryBadge(selectedPost.category)}
           </div>
         </div>
 
@@ -152,7 +114,7 @@ Stay tuned for more posts about my projects and development journey!
               hr: () => <hr className="border-gray-600 my-8" />
             }}
           >
-            {postContent}
+            {selectedPost.content}
           </ReactMarkdown>
         </article>
       </div>
@@ -175,13 +137,17 @@ Stay tuned for more posts about my projects and development journey!
 
       <div className="mb-8">
         <p className="text-lg text-gray-400">
-          Thoughts on development, tools, and technology.
+          Thoughts on development, tools, technology, and stories behind my projects.
         </p>
       </div>
 
       {/* Blog Posts */}
       <div className="w-full">
-        {posts.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-16">
+            <p className="text-gray-400 text-lg">Loading blog posts...</p>
+          </div>
+        ) : posts.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-gray-400 text-lg">No blog posts yet. Check back soon!</p>
           </div>
@@ -194,9 +160,14 @@ Stay tuned for more posts about my projects and development journey!
                 onClick={() => handlePostClick(post)}
               >
                 <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-2xl font-bold text-white hover:text-yellow-400 transition-colors duration-300">
-                    {post.title}
-                  </h2>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h2 className="text-2xl font-bold text-white hover:text-yellow-400 transition-colors duration-300">
+                        {post.title}
+                      </h2>
+                      {getCategoryBadge(post.category)}
+                    </div>
+                  </div>
                   <span className="text-sm text-gray-400 whitespace-nowrap ml-4">
                     {new Date(post.date).toLocaleDateString('en-US', {
                       year: 'numeric',

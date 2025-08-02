@@ -74,24 +74,7 @@ export const seoData: Record<string, SEOPageData> = {
     image: `${baseUrl}/og-images/projects.jpg`,
     type: 'website'
   },
-  '/resume': {
-    title: 'Resume - Feraldy Nathanael',
-    description: 'Professional resume of Feraldy Nathanael - Test Engineer and Project Manager with expertise in QA automation, Playwright, and product development.',
-    keywords: [
-      'resume',
-      'cv',
-      'test engineer',
-      'project manager',
-      'qa automation',
-      'career',
-      'experience',
-      'skills',
-      'qualifications',
-      'professional background'
-    ],
-    image: `${baseUrl}/og-images/resume.jpg`,
-    type: 'profile'
-  },
+
   '/blog': {
     title: 'Blog - Feraldy Nathanael',
     description: 'Technical blog posts about software testing, QA automation, project management, and web development insights from a Test Engineer perspective.',

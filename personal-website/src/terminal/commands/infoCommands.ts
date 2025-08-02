@@ -7,24 +7,13 @@ export const infoCommands: Command[] = [
     category: 'info',
     usage: 'dy [--option]',
     examples: ['dy --history', 'dy --skills', 'dy --achievements'],
-    execute: (): CommandResult => ({
-      output: `Running Version 1.1.0
-
-Usage: >
-  <span class="text-yellow-400">dy --history</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's history
-  <span class="text-yellow-400">dy --tree</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's skill tree                  
-  <span class="text-yellow-400">dy --skills</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's skills & expertise
-  <span class="text-yellow-400">dy --achievements</span>&nbsp;&nbsp;- Show feraldy's achievements
-  <span class="text-yellow-400">dy --top</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show top skills & projects`
-    })
-  },
-  {
-    name: 'dy --history',
-    description: 'Show career timeline',
-    category: 'info',
-    usage: 'dy --history',
-    execute: (): CommandResult => ({
-      output: `Career Timeline:
+    execute: (args: string[]): CommandResult => {
+      const option = args[0];
+      
+      switch (option) {
+        case '--history':
+          return {
+            output: `Career Timeline:
 2024-Present  Test Engineer & Project Manager
               • RiddleStory / Enboq
               • QA Process, E2E Testing, PRDs
@@ -39,15 +28,11 @@ Usage: >
 
 Education:
               • B.Sc. Computer Science - ITS (2018-2022)`
-    })
-  },
-  {
-    name: 'dy --tree',
-    description: 'Show skills tree',
-    category: 'info',
-    usage: 'dy --tree',
-    execute: (): CommandResult => ({
-      output: `Skills Tree:
+          };
+          
+        case '--tree':
+          return {
+            output: `Skills Tree:
 ├── Quality Assurance
 │   ├── Test Planning & Strategy
 │   ├── Automation (Playwright, Selenium, Appium)
@@ -65,15 +50,11 @@ Education:
     ├── Qase.io, ClickUp
     ├── Git/GitHub, Jenkins
     └── CI/CD, Node.js`
-    })
-  },
-  {
-    name: 'dy --skills',
-    description: 'Show technical skills',
-    category: 'info',
-    usage: 'dy --skills',
-    execute: (): CommandResult => ({
-      output: `Technical Skills:
+          };
+          
+        case '--skills':
+          return {
+            output: `Technical Skills:
 
 Quality Assurance:
    • Test Automation      ███████████  Advanced
@@ -91,15 +72,11 @@ Tools:
    • Qase.io              ████████████ Expert
    • ClickUp              ██████████   Advanced
    • Jenkins              ████████     Intermediate`
-    })
-  },
-  {
-    name: 'dy --achievements',
-    description: 'Show achievements',
-    category: 'info',
-    usage: 'dy --achievements',
-    execute: (): CommandResult => ({
-      output: `Achievements Unlocked:
+          };
+          
+        case '--achievements':
+          return {
+            output: `Achievements Unlocked:
 
 Test Engineer (2021-Present)
    3+ years of professional experience
@@ -117,15 +94,11 @@ Team Player
    Strong collaboration with dev & product teams
 
 Next Achievement: Senior Test Engineer`
-    })
-  },
-  {
-    name: 'dy --top',
-    description: 'Show top skills and projects',
-    category: 'info',
-    usage: 'dy --top',
-    execute: (): CommandResult => ({
-      output: `Top Skills & Projects:
+          };
+          
+        case '--top':
+          return {
+            output: `Top Skills & Projects:
 
 Hot Skills:
 1. QA Automation          ███████████  90%
@@ -142,7 +115,21 @@ Focus Areas:
 • QA Process Implementation
 • E2E & API Automation
 • Product Requirement Docs`
-    })
+          };
+          
+        default:
+          return {
+            output: `Running Version 1.1.0
+
+Usage: >
+  <span class="text-yellow-400">dy --history</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's history
+  <span class="text-yellow-400">dy --tree</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's skill tree                  
+  <span class="text-yellow-400">dy --skills</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's skills & expertise
+  <span class="text-yellow-400">dy --achievements</span>&nbsp;&nbsp;- Show feraldy's achievements
+  <span class="text-yellow-400">dy --top</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show top skills & projects`
+          };
+      }
+    }
   },
   {
     name: 'manual',
@@ -173,7 +160,7 @@ EXAMPLES
      feraldy --role=project-manager # Efficient PM mode
 
 SEE ALSO
-     /projects, /resume, /contact
+     /projects, resume (terminal command), /contact
 
 AUTHOR
      Feraldy Nathanael <fn.archived@gmail.com>`

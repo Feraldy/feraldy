@@ -1,6 +1,23 @@
 import { Command, TerminalContext, CommandResult } from '../types';
+import { getAllCommands } from './commandUtils';
 
 export const systemCommands: Command[] = [
+  {
+    name: 'debug',
+    description: 'Debug command registry',
+    category: 'system',
+    usage: 'debug',
+    execute: (): CommandResult => {
+      const allCommands = getAllCommands();
+      const commands = allCommands.map(cmd => cmd.name).sort();
+      const newCommands = ['coffee-order', 'playlist', 'bucket-list', 'typing-test', 'performance', 'base64'];
+      const foundCommands = newCommands.filter(cmd => commands.includes(cmd));
+      const missingCommands = newCommands.filter(cmd => !commands.includes(cmd));
+      return { 
+        output: `Available commands (${commands.length}):\n${commands.join(', ')}\n\nNew commands found (${foundCommands.length}/${newCommands.length}):\n${foundCommands.join(', ')}\n\nMissing commands (${missingCommands.length}):\n${missingCommands.join(', ')}` 
+      };
+    }
+  },
   {
     name: 'clear',
     description: 'Clear the terminal screen',
