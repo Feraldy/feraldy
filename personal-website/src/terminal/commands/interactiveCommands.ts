@@ -1,4 +1,4 @@
-import { Command, TerminalContext, CommandResult } from '../types';
+import { Command, CommandResult, TerminalContext } from '../types';
 
 export const interactiveCommands: Command[] = [
   {
@@ -159,10 +159,10 @@ ${randomTrivia.options.map((opt, i) => `${String.fromCharCode(65 + i)}) ${opt}`)
   },
   {
     name: 'tarot',
-    description: 'Mystical card reading',
+    description: 'Mystical card reading - ask a question!',
     category: 'interactive',
-    usage: 'tarot',
-    execute: (): CommandResult => {
+    usage: 'tarot [question] - Ask the cards for guidance',
+    execute: (args: string[], context: TerminalContext): CommandResult => {
       const tarotCards = [
         // Major Arcana
         { name: "The Fool", meaning: "New beginnings, innocence, spontaneity, and free spirit await you" },
@@ -188,10 +188,24 @@ ${randomTrivia.options.map((opt, i) => `${String.fromCharCode(65 + i)}) ${opt}`)
         { name: "Judgement", meaning: "Judgement, rebirth, inner calling, absolution, and reflection" },
         { name: "The World", meaning: "Completion, accomplishment, travel, and fulfillment" }
       ];
-      
+
+      if (!args || args.length === 0) {
+        return {
+          output: `🔮 <span class="text-purple-400">Mystical Tarot Reading</span>
+
+<span class="text-yellow-400">Please ask a question to receive guidance from the cards.</span>
+
+<span class="text-gray-300">Usage: tarot [your question]</span>
+<span class="text-gray-300">Example: tarot should I change my career?</span>
+
+<span class="text-purple-400">✨ The cards await your question ✨</span>`
+        };
+      }
+
+      const question = args.join(' ');
       const numCards = Math.floor(Math.random() * 3) + 1; // 1-3 cards
-      const selectedCards = [];
-      const usedIndices = new Set();
+      const selectedCards: Array<{name: string, meaning: string}> = [];
+      const usedIndices = new Set<number>();
       
       for (let i = 0; i < numCards; i++) {
         let randomIndex;
@@ -201,21 +215,76 @@ ${randomTrivia.options.map((opt, i) => `${String.fromCharCode(65 + i)}) ${opt}`)
         usedIndices.add(randomIndex);
         selectedCards.push(tarotCards[randomIndex]);
       }
-      
+
       let tarotReading = `🔮 <span class="text-purple-400">Mystical Tarot Reading</span>
 
-<span class="text-yellow-400">The cards have spoken... You drew ${numCards} card${numCards > 1 ? 's' : ''}:</span>
+<span class="text-yellow-400">Question: "${question}"</span>
+
+<span class="text-cyan-400">The cards have spoken... You drew ${numCards} card${numCards > 1 ? 's' : ''}:</span>
 
 `;
+      
       selectedCards.forEach((card, index) => {
         tarotReading += `<span class="text-cyan-400">Card ${index + 1}: ${card.name}</span>
 <span class="text-gray-300">${card.meaning}</span>
 
 `;
       });
+
+      const updateId = `tarot-${Date.now()}`;
       
-      tarotReading += `<span class="text-purple-400">✨ May the cards guide your path forward ✨</span>`;
-      return { output: tarotReading };
+      // Handle AI reading asynchronously using inline updates
+      const handleAIReading = async () => {
+        try {
+          const { tarotRateLimiter } = await import('../../utils/rateLimiter');
+          const { tarotAI } = await import('../../utils/tarotAI');
+          
+          if (tarotAI.isAvailable() && tarotRateLimiter.canMakeRequest()) {
+            tarotRateLimiter.recordRequest();
+            const aiReading = await tarotAI.generateReading(question, selectedCards);
+            
+            const updatedOutput = tarotReading + `<span class="text-green-400">✨ The Oracle's Interpretation:</span>
+<span class="text-gray-300">${aiReading}</span>
+
+<span class="text-yellow-400">Readings remaining: ${tarotRateLimiter.getRemainingRequests()}/3 per hour</span>
+
+<span class="text-purple-400">✨ May the cards guide your path forward ✨</span>`;
+            
+            context.updateCommandOutput?.(updateId, updatedOutput);
+          } else if (tarotAI.isAvailable() && !tarotRateLimiter.canMakeRequest()) {
+            const timeUntilReset = Math.ceil(tarotRateLimiter.getTimeUntilReset() / (1000 * 60));
+            const updatedOutput = tarotReading + `<span class="text-yellow-400">⏰ Reading limit reached. Try again in ${timeUntilReset} minutes.</span>
+
+<span class="text-purple-400">✨ May the cards guide your path forward ✨</span>`;
+            
+            context.updateCommandOutput?.(updateId, updatedOutput);
+          } else {
+            const updatedOutput = tarotReading + `<span class="text-yellow-400">💡 Configure VITE_GEMINI_API_KEY for enhanced readings!</span>
+
+<span class="text-purple-400">✨ May the cards guide your path forward ✨</span>`;
+            
+            context.updateCommandOutput?.(updateId, updatedOutput);
+          }
+        } catch (error) {
+          console.error('Reading failed:', error);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          const updatedOutput = tarotReading + `<span class="text-red-400">⚠️ The Oracle is currently unavailable.</span>
+<span class="text-gray-400">Error: ${errorMessage}</span>
+
+<span class="text-purple-400">✨ May the cards guide your path forward ✨</span>`;
+          
+          context.updateCommandOutput?.(updateId, updatedOutput);
+        }
+      };
+
+      // Start reading process
+      setTimeout(handleAIReading, 1500);
+      
+      return { 
+        output: tarotReading,
+        isUpdating: true,
+        updateId
+      };
     }
   }
 ];

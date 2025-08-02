@@ -26,6 +26,7 @@ const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showContactForm, setShowContactForm] = useState(false);
+  const terminalContentRef = useRef<HTMLDivElement>(null);
   const [processingCommand, setProcessingCommand] = useState(false);
   const [currentProcessingCommand, setCurrentProcessingCommand] = useState('');
   const [commandHistory, setCommandHistory] = useState<CommandHistoryItem[]>([]);
@@ -83,9 +84,26 @@ const LandingPage: React.FC = () => {
   useEffect(() => {
     const storyParam = searchParams.get('story');
     if (storyParam) {
-      handleBlogStoryClick(storyParam);
+      setSelectedBlogStory(storyParam);
+      
+      // Enable blog tab immediately and switch to it
+      setTabs(prevTabs => {
+        const updatedTabs = prevTabs.map(tab => ({
+          ...tab,
+          disabled: tab.type === 'blog' ? false : tab.disabled,
+          isActive: tab.type === 'blog'
+        }));
+        
+        // Set active tab to blog
+        const blogTab = updatedTabs.find(tab => tab.type === 'blog');
+        if (blogTab) {
+          setActiveTabId(blogTab.id);
+        }
+        
+        return updatedTabs;
+      });
     }
-  }, []);
+  }, [searchParams]);
 
   // Handle URL hash for terminal tabs
   useEffect(() => {
@@ -118,7 +136,7 @@ const LandingPage: React.FC = () => {
     if (animationPhase === ANIMATION_PHASES.NAVIGATION && !hasAutoOpenedTabs.current) {
       hasAutoOpenedTabs.current = true;
       
-      // Enable all disabled tabs
+      // Enable all disabled tabs, but preserve existing active states
       setTabs(prevTabs => 
         prevTabs.map(tab => ({ 
           ...tab, 
@@ -140,6 +158,16 @@ const LandingPage: React.FC = () => {
     const commandName = parts[0].toLowerCase();
     const args = parts.slice(1);
 
+    const updateCommandOutput = (updateId: string, newOutput: string) => {
+      setCommandHistory(prev => 
+        prev.map(item => 
+          item.updateId === updateId 
+            ? { ...item, output: newOutput, isUpdating: false }
+            : item
+        )
+      );
+    };
+
     const context: TerminalContext = {
       navigate,
       setShowContactForm,
@@ -150,7 +178,8 @@ const LandingPage: React.FC = () => {
       tabs,
       setTabs,
       activeTabId,
-      setActiveTabId
+      setActiveTabId,
+      updateCommandOutput
     };
 
     const command = getCommand(createCommandRegistry(), commandName);
@@ -160,6 +189,8 @@ const LandingPage: React.FC = () => {
       try {
         const result = command.execute(args, context);
         newHistoryItem.output = result.output;
+        newHistoryItem.isUpdating = result.isUpdating;
+        newHistoryItem.updateId = result.updateId;
 
         if (result.shouldNavigate) {
           handleCommandClick(trimmedCommand, result.shouldNavigate);
@@ -215,10 +246,16 @@ const LandingPage: React.FC = () => {
     const existingTab = tabs.find(tab => tab.type === type);
     if (existingTab) {
       setActiveTabId(existingTab.id);
-      window.location.hash = `terminal-${type}`;
       setTabs(prevTabs => 
         prevTabs.map(tab => ({ ...tab, isActive: tab.id === existingTab.id }))
       );
+      
+      // Scroll terminal content to top when opening a new tab
+      setTimeout(() => {
+        if (terminalContentRef.current) {
+          terminalContentRef.current.scrollTo({ top: 0, behavior: 'auto' });
+        }
+      }, 100);
     }
   };
 
@@ -240,7 +277,10 @@ const LandingPage: React.FC = () => {
       setLoadingTabId(null);
 
       if (targetTab.type !== 'main') {
-        window.location.hash = `terminal-${targetTab.type}`;
+        // Scroll terminal content to top when switching to a content tab
+        if (terminalContentRef.current) {
+          terminalContentRef.current.scrollTo({ top: 0, behavior: 'auto' });
+        }
       } else {
         window.location.hash = '';
       }
@@ -373,6 +413,7 @@ const LandingPage: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center px-2 sm:px-4 py-4">
         <div className="flex items-center justify-center w-full">
           <TerminalWindow
+            ref={terminalContentRef}
             appAnimationStage={appAnimationStage}
             tabs={tabs}
             activeTabId={activeTabId}

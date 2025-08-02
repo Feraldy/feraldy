@@ -61,13 +61,24 @@ const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory }) => {
     );
   };
 
+  const getNewBadge = () => {
+    return (
+      <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded font-semibold">
+        NEW
+      </span>
+    );
+  };
+
   if (selectedPost) {
     return (
       <div className="p-4 text-gray-300 terminal-font text-xs sm:text-sm md:text-base">
         <div className="mb-6 font-mono text-sm">
           <div className="flex items-center mb-2">
-            <span className="text-blue-400 mr-2">$</span>
-            <span className="text-gray-300">head -n 1 {selectedPost.filename}</span>
+            <span className="text-cyan-400">feraldy@portfolio</span>
+            <span className="text-white">:</span>
+            <span className="text-blue-400">~</span>
+            <span className="text-white">$</span>
+            <span className="text-gray-300 ml-2">head -n 1 {selectedPost.filename}</span>
             <span className="text-green-400 ml-2">✓</span>
           </div>
           <div className="pl-4 text-gray-300 mb-4 flex items-center gap-4">
@@ -77,6 +88,7 @@ const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory }) => {
               day: 'numeric'
             })}</span>
             {getCategoryBadge(selectedPost.category)}
+            {selectedPost.is_new && getNewBadge()}
           </div>
         </div>
 
@@ -126,8 +138,11 @@ const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory }) => {
       {/* Terminal command simulation */}
       <div className="mb-6 font-mono text-sm">
         <div className="flex items-center mb-2">
-          <span className="text-blue-400 mr-2">$</span>
-          <span className="text-gray-300">find . -name "*.md" | wc -l</span>
+          <span className="text-cyan-400">feraldy@portfolio</span>
+          <span className="text-white">:</span>
+          <span className="text-blue-400">~</span>
+          <span className="text-white">$</span>
+          <span className="text-gray-300 ml-2">find . -name "*.md" | wc -l</span>
           <span className="text-green-400 ml-2">✓</span>
         </div>
         <div className="pl-4 text-gray-300 mb-4">
@@ -156,16 +171,17 @@ const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory }) => {
             {posts.map((post) => (
               <article
                 key={post.id}
-                className="bg-neutral-800 rounded-lg p-8 hover:bg-neutral-750 transition-all duration-300 cursor-pointer"
+                className="bg-slate-800 rounded-lg p-8 hover:bg-slate-700 transition-all duration-300 cursor-pointer"
                 onClick={() => handlePostClick(post)}
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-2xl font-bold text-white hover:text-yellow-400 transition-colors duration-300">
+                      <h2 className="text-2xl font-bold text-white hover:text-blue-400 transition-colors duration-300">
                         {post.title}
                       </h2>
                       {getCategoryBadge(post.category)}
+                      {post.is_new && getNewBadge()}
                     </div>
                   </div>
                   <span className="text-sm text-gray-400 whitespace-nowrap ml-4">
@@ -179,7 +195,7 @@ const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory }) => {
                 <p className="text-gray-300 leading-relaxed mb-4">
                   {post.excerpt}
                 </p>
-                <button className="text-left w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded transition-colors duration-200">
+                <button className="text-left w-full px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded transition-colors duration-200">
                   <span className="text-yellow-400">cat</span> <span className="text-blue-400">{post.filename}</span>
                 </button>
               </article>

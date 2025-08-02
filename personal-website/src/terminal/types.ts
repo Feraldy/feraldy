@@ -18,11 +18,14 @@ export interface TerminalContext {
   setTabs?: React.Dispatch<React.SetStateAction<TerminalTab[]>>;
   activeTabId?: string;
   setActiveTabId?: React.Dispatch<React.SetStateAction<string>>;
+  updateCommandOutput?: (updateId: string, newOutput: string) => void;
 }
 
 export interface CommandHistoryItem {
   command: string;
   output: string;
+  isUpdating?: boolean;
+  updateId?: string;
 }
 
 export interface CommandResult {
@@ -34,6 +37,8 @@ export interface CommandResult {
     type: 'resume' | 'projects' | 'blog';
     title: string;
   };
+  isUpdating?: boolean;
+  updateId?: string;
 }
 
 export interface Command {

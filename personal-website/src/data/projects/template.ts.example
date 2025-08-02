@@ -1,0 +1,23 @@
+import { Project } from './types';
+// Import your project image
+// import ProjectImage from '../../assets/YourProjectImage.png';
+
+export const yourProjectName: Project = {
+  id: 999, // Use next available ID
+  title: "Your Project Title",
+  description: "A brief description of what your project does and its key features.",
+  category: "Web App", // or "Mobile App", "Desktop App", "Library", etc.
+  technologies: ["React", "TypeScript", "Tailwind CSS"], // List of technologies used
+  liveUrl: "https://your-project-url.com",
+  githubUrl: "https://github.com/yourusername/your-repo",
+  status: "Active", // "Active" | "In Development" | "Completed" | "Archived"
+  image: "ProjectImage", // Reference to imported image
+  storySlug: "your-project-story" // Corresponding blog story filename (without .md)
+};
+
+// Steps to add this project:
+// 1. Copy this file and rename it to your-project-name.ts
+// 2. Update all the project details above
+// 3. Add your project image to src/assets/
+// 4. Import and export your project in src/data/projects/index.ts
+// 5. Optionally add a blog story to public/blog/your-project-story.md

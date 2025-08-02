@@ -1,6 +1,7 @@
 import React from 'react';
 import CommandSuggestions from './CommandSuggestions';
 import DidYouMean from './DidYouMean';
+import LoadingDots from './LoadingDots';
 import { CommandHistoryItem } from '../../terminal/types';
 import { getDidYouMeanSuggestions } from '../../terminal/commands';
 
@@ -92,6 +93,11 @@ const InteractiveTerminal: React.FC<InteractiveTerminalProps> = ({
           {item.output && (
             <div className="mt-1 whitespace-pre-line">
               <div className="font-mono text-gray-200" dangerouslySetInnerHTML={{ __html: item.output }} />
+              {item.isUpdating && (
+                <div className="mt-2">
+                  <LoadingDots text="🔮 Consulting the Oracle" className="text-purple-400" />
+                </div>
+              )}
             </div>
           )}
           {/* Show "Did You Mean" for invalid commands */}

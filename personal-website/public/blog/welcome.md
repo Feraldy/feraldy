@@ -4,6 +4,7 @@ slug: "welcome"
 excerpt: "Welcome to my personal blog! This is where I'll share my thoughts on development, tools, and technology."
 date: "2025-01-19"
 category: "blog-post"
+is_new: true
 ---
 
 # Welcome to My Blog

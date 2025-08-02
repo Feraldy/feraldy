@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import TabManager from './TabManager';
 import { TerminalTab } from '../../terminal/types';
 import { AppAnimationStage } from '../../utils/constants';
@@ -14,7 +14,7 @@ interface TerminalWindowProps {
   children: React.ReactNode;
 }
 
-const TerminalWindow: React.FC<TerminalWindowProps> = ({
+const TerminalWindow = forwardRef<HTMLDivElement, TerminalWindowProps>(({
   appAnimationStage,
   tabs,
   activeTabId,
@@ -23,7 +23,7 @@ const TerminalWindow: React.FC<TerminalWindowProps> = ({
   onTabClick,
   onTabClose,
   children
-}) => {
+}, ref) => {
   return (
     <div 
       className={`bg-gray-900 rounded-lg overflow-hidden border border-gray-700 shadow-2xl w-full max-w-6xl mx-auto transition-all duration-1000 ease-out ${
@@ -68,13 +68,13 @@ const TerminalWindow: React.FC<TerminalWindowProps> = ({
       {/* Terminal Content */}
       {appAnimationStage === 'opened' && (
         <div className="flex flex-col h-full" style={{ height: tabs.length > 1 ? 'calc(100% - 100px)' : 'calc(100% - 60px)' }}>
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div ref={ref} className="flex-1 overflow-y-auto custom-scrollbar">
             {children}
           </div>
         </div>
       )}
     </div>
   );
-};
+});
 
 export default TerminalWindow;

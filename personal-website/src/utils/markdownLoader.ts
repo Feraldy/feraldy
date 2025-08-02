@@ -34,6 +34,7 @@ export interface BlogPost {
   project?: string;
   filename: string;
   content: string;
+  is_new?: boolean;
 }
 
 interface BlogPostFrontmatter {
@@ -43,6 +44,7 @@ interface BlogPostFrontmatter {
   date: string;
   category: 'blog-post' | 'project-story';
   project?: string;
+  is_new?: string;
 }
 
 // Cache for loaded blog posts
@@ -69,7 +71,8 @@ const loadMarkdownFile = async (filename: string): Promise<BlogPost | null> => {
       category: frontmatter.category,
       project: frontmatter.project,
       filename: filename,
-      content: content
+      content: content,
+      is_new: frontmatter.is_new === 'true'
     };
   } catch (error) {
     console.error(`Error loading blog post ${filename}:`, error);

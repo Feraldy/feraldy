@@ -226,8 +226,11 @@ const ResumeTabContent: React.FC = () => {
       {/* Terminal command simulation */}
       <div className="mb-6 font-mono text-sm">
         <div className="flex items-center mb-2">
-          <span className="text-blue-400 mr-2">$</span>
-          <span className="text-gray-300">whoami</span>
+          <span className="text-cyan-400">feraldy@portfolio</span>
+          <span className="text-white">:</span>
+          <span className="text-blue-400">~</span>
+          <span className="text-white">$</span>
+          <span className="text-gray-300 ml-2">whoami</span>
           <span className="text-green-400 ml-2">✓</span>
         </div>
         <div className="pl-4 text-gray-300 mb-4">

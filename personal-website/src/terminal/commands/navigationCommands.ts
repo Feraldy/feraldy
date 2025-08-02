@@ -1,13 +1,55 @@
-import { Command, CommandResult } from '../types';
+import { Command, CommandResult, TerminalContext } from '../types';
 
 export const navigationCommands: Command[] = [
+  {
+    name: 'cd',
+    description: 'Change directory / Open tab',
+    category: 'navigation',
+    usage: 'cd <directory>',
+    examples: ['cd projects', 'cd project', 'cd resume', 'cd blog'],
+    execute: (args: string[], _context: TerminalContext): CommandResult => {
+      if (args.length === 0) {
+        return {
+          output: 'Usage: cd <directory>\nAvailable directories: projects, resume, blog'
+        };
+      }
+
+      const target = args[0].toLowerCase();
+      
+      // Directory mappings
+      const directoryMap: Record<string, { type: 'projects' | 'resume' | 'blog', title: string }> = {
+        'projects': { type: 'projects', title: 'Projects' },
+        'project': { type: 'projects', title: 'Projects' },
+        './projects': { type: 'projects', title: 'Projects' },
+        'resume': { type: 'resume', title: 'Resume' },
+        './resume': { type: 'resume', title: 'Resume' },
+        'blog': { type: 'blog', title: 'Blog' },
+        './blog': { type: 'blog', title: 'Blog' }
+      };
+
+      const destination = directoryMap[target];
+      
+      if (!destination) {
+        return {
+          output: `cd: ${args[0]}: No such directory\nAvailable directories: projects, resume, blog`
+        };
+      }
+
+      return {
+        output: `Opening ${destination.title.toLowerCase()} tab...`,
+        shouldOpenTab: {
+          type: destination.type,
+          title: destination.title
+        }
+      };
+    }
+  },
   {
     name: 'projects',
     description: 'Open projects in new tab',
     category: 'navigation',
     usage: 'projects',
-    aliases: ['cd ./projects', 'cd projects'],
-    execute: (): CommandResult => {
+    execute: (_args: string[], _context: TerminalContext): CommandResult => {
       return {
         output: 'Opening projects tab...',
         shouldOpenTab: {
@@ -22,8 +64,8 @@ export const navigationCommands: Command[] = [
     description: 'Open resume in new tab',
     category: 'navigation',
     usage: 'resume',
-    aliases: ['cd ./resume', 'cd resume', 'cat ./resume.pdf'],
-    execute: (): CommandResult => {
+    aliases: ['cat ./resume.pdf'],
+    execute: (_args: string[], _context: TerminalContext): CommandResult => {
       return {
         output: 'Opening resume tab...',
         shouldOpenTab: {
@@ -38,8 +80,7 @@ export const navigationCommands: Command[] = [
     description: 'Open blog in new tab',
     category: 'navigation',
     usage: 'blog',
-    aliases: ['cd ./blog', 'cd blog'],
-    execute: (): CommandResult => {
+    execute: (_args: string[], _context: TerminalContext): CommandResult => {
       return {
         output: 'Opening blog tab...',
         shouldOpenTab: {
@@ -55,7 +96,7 @@ export const navigationCommands: Command[] = [
     category: 'navigation',
     usage: 'contact',
     aliases: ['./contact.sh'],
-    execute: (): CommandResult => {
+    execute: (_args: string[], _context: TerminalContext): CommandResult => {
       return {
         output: 'Opening contact form...',
         shouldOpenContact: true

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ContactModal from '../../ContactModal';
-import WellBalanceImage from '../../../assets/WellBalance.png';
-import CoffeeWithDyImage from '../../../assets/CoffeeWIthDy.png';
+import { projects as projectsData } from '../../../data/projects';
 
 interface ProjectsTabContentProps {
   onBlogStoryClick?: (storySlug: string) => void;
@@ -10,40 +9,18 @@ interface ProjectsTabContentProps {
 const ProjectsTabContent: React.FC<ProjectsTabContentProps> = ({ onBlogStoryClick }) => {
   const [showContactModal, setShowContactModal] = useState(false);
 
-  const projects = [
-    {
-      id: 1,
-      title: "Well Balance",
-      description: "A comprehensive wellness and balance tracking application to help users maintain a healthy lifestyle with intuitive dashboard and progress tracking.",
-      category: "Web App",
-      technologies: ["React", "Next.js", "Tailwind CSS", "Vercel"],
-      liveUrl: "https://well-balance.vercel.app",
-      githubUrl: "#",
-      status: "Active",
-      image: WellBalanceImage,
-      storySlug: "well-balance-story"
-    },
-    {
-      id: 2,
-      title: "Coffee with Dy",
-      description: "A personalized coffee brewing guide featuring custom recipes and the famous 4:6 method by Tetsu Kasuya. Perfect your coffee brewing with different water ratios and weights.",
-      category: "Web App",
-      technologies: ["React", "Next.js", "Tailwind CSS", "Vercel"],
-      liveUrl: "https://coffeewith-dy.vercel.app",
-      githubUrl: "#",
-      status: "Active",
-      image: CoffeeWithDyImage,
-      storySlug: "coffee-with-dy-story"
-    }
-  ];
+  const projects = projectsData;
 
   return (
     <div className="p-4 text-gray-300 terminal-font text-xs sm:text-sm md:text-base">
       {/* Terminal command simulation */}
       <div className="mb-6 font-mono text-sm">
         <div className="flex items-center mb-2">
-          <span className="text-blue-400 mr-2">$</span>
-          <span className="text-gray-300">ls -la ./projects</span>
+          <span className="text-cyan-400">feraldy@portfolio</span>
+          <span className="text-white">:</span>
+          <span className="text-blue-400">~</span>
+          <span className="text-white">$</span>
+          <span className="text-gray-300 ml-2">ls -la ./projects</span>
           <span className="text-green-400 ml-2">✓</span>
         </div>
         <div className="pl-4 text-gray-400 mb-4">
