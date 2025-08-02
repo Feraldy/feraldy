@@ -14,6 +14,8 @@ export interface TerminalContext {
   setCommandHistory: React.Dispatch<React.SetStateAction<CommandHistoryItem[]>>;
   currentStoryState: string | null;
   setCurrentStoryState: React.Dispatch<React.SetStateAction<string | null>>;
+  currentStoryId: string | null;
+  setCurrentStoryId: React.Dispatch<React.SetStateAction<string | null>>;
   tabs?: TerminalTab[];
   setTabs?: React.Dispatch<React.SetStateAction<TerminalTab[]>>;
   activeTabId?: string;
