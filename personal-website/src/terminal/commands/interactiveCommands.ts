@@ -259,7 +259,7 @@ ${randomTrivia.options.map((opt, i) => `${String.fromCharCode(65 + i)}) ${opt}`)
             
             context.updateCommandOutput?.(updateId, updatedOutput);
           } else {
-            const updatedOutput = tarotReading + `<span class="text-yellow-400">💡 Configure VITE_GEMINI_API_KEY for enhanced readings!</span>
+            const updatedOutput = tarotReading + `<span class="text-yellow-400">💡 AI readings are temporarily unavailable.</span>
 
 <span class="text-purple-400">✨ May the cards guide your path forward ✨</span>`;
             
