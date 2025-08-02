@@ -1,4 +1,6 @@
 import { Command, CommandResult, TerminalContext } from '../types';
+import { tarotAI } from '../../utils/tarotAI';
+import { tarotRateLimiter } from '../../utils/rateLimiter';
 
 export const interactiveCommands: Command[] = [
   {
@@ -236,8 +238,6 @@ ${randomTrivia.options.map((opt, i) => `${String.fromCharCode(65 + i)}) ${opt}`)
       // Handle AI reading asynchronously using inline updates
       const handleAIReading = async () => {
         try {
-          const { tarotRateLimiter } = await import('../../utils/rateLimiter');
-          const { tarotAI } = await import('../../utils/tarotAI');
           
           if (tarotAI.isAvailable() && tarotRateLimiter.canMakeRequest()) {
             tarotRateLimiter.recordRequest();
