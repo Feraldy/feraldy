@@ -85,7 +85,7 @@ export const tabCommands: Command[] = [
     name: 'switch',
     description: 'Switch to specified tab',
     category: 'system',
-    usage: 'switch <tab_number>',
+    usage: 'switch [tab_number]',
     aliases: ['tab'],
     execute: (args: string[], context: TerminalContext): CommandResult => {
       if (!context.tabs || !context.setTabs || !context.setActiveTabId) {

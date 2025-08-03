@@ -5,7 +5,7 @@ export const navigationCommands: Command[] = [
     name: 'cd',
     description: 'Change directory / Open tab',
     category: 'navigation',
-    usage: 'cd <directory>',
+    usage: 'cd [directory]',
     examples: ['cd projects', 'cd project', 'cd resume', 'cd blog'],
     execute: (args: string[], _context: TerminalContext): CommandResult => {
       if (args.length === 0) {

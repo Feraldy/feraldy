@@ -5,7 +5,7 @@ export const storyCommand: Command = {
   name: 'story',
   description: 'Interactive horror adventures with multiple stories',
   category: 'interactive',
-  usage: 'story [choice|list|random|story-id]',
+  usage: 'story',
   examples: ['story', 'story a', 'story list', 'story random', 'story midnight-library', 'story reset'],
   execute: (args: string[], context: TerminalContext): CommandResult => {
     const choice = args[0]?.toLowerCase() || '';

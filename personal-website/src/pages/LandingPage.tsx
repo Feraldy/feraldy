@@ -106,6 +106,21 @@ const LandingPage: React.FC = () => {
     }
   }, [searchParams]);
 
+  // Auto-scroll terminal to bottom when new command output is added
+  useEffect(() => {
+    if (terminalContentRef.current && activeTabId === 'main' && commandHistory.length > 0) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        if (terminalContentRef.current) {
+          terminalContentRef.current.scrollTo({ 
+            top: terminalContentRef.current.scrollHeight, 
+            behavior: 'smooth' 
+          });
+        }
+      }, 100);
+    }
+  }, [commandHistory, activeTabId]);
+
   // Handle URL hash for terminal tabs
   useEffect(() => {
     const handleHashChange = () => {

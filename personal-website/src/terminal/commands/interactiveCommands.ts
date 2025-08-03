@@ -493,7 +493,7 @@ export const interactiveCommands: Command[] = [
     name: 'choose',
     description: 'Pick randomly from options',
     category: 'interactive',
-    usage: 'choose [option1] [option2] [option3]...',
+    usage: 'choose [option1] [option2]',
     examples: ['choose pizza pasta salad', 'choose yes no maybe'],
     execute: (args: string[]): CommandResult => {
       if (args.length < 2) {
@@ -600,7 +600,7 @@ ${randomTrivia.options.map((opt, i) => `${String.fromCharCode(65 + i)}) ${opt}`)
     name: 'tarot',
     description: 'Mystical card reading - ask a question!',
     category: 'interactive',
-    usage: 'tarot [question] - Ask the cards for guidance',
+    usage: 'tarot [question]',
     execute: (args: string[], context: TerminalContext): CommandResult => {
       const tarotCards = [
         // Major Arcana
