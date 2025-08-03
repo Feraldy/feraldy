@@ -169,7 +169,7 @@ AUTHOR
   {
     name: 'mood',
     description: 'Show current mood',
-    category: 'info',
+    category: 'entertainment',
     usage: 'mood',
     execute: (): CommandResult => {
       const moods = [

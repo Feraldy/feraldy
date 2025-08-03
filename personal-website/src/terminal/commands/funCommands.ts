@@ -4,7 +4,7 @@ export const funCommands: Command[] = [
   {
     name: 'fortune',
     description: 'Get programming quotes',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'fortune',
     execute: (): CommandResult => {
       const fortunes = [
@@ -28,7 +28,7 @@ export const funCommands: Command[] = [
   {
     name: 'weather',
     description: 'Show weather conditions',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'weather',
     execute: (): CommandResult => {
       const weatherConditions = [
@@ -50,7 +50,7 @@ Forecast: High productivity with occasional coffee breaks`
   {
     name: 'matrix',
     description: 'Enter the Matrix',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'matrix',
     execute: (): CommandResult => ({
       output: `Wake up, Neo...
@@ -67,7 +67,7 @@ You take the red pill - you stay in Wonderland.`
   {
     name: 'hack',
     description: 'Simulate hacking sequence',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'hack',
     execute: (): CommandResult => ({
       output: `<span class="text-green-400">Initializing hack sequence...</span>
@@ -91,7 +91,7 @@ You take the red pill - you stay in Wonderland.`
   {
     name: 'secret',
     description: 'Find hidden surprises',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'secret',
     execute: (): CommandResult => {
       const secrets = [
@@ -112,7 +112,7 @@ You take the red pill - you stay in Wonderland.`
   {
     name: 'joke',
     description: 'Random programming jokes',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'joke',
     execute: (): CommandResult => {
       const jokes = [
@@ -133,7 +133,7 @@ You take the red pill - you stay in Wonderland.`
   {
     name: 'dadjoke',
     description: 'Classic dad humor',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'dadjoke',
     execute: (): CommandResult => {
       const dadJokes = [
@@ -154,7 +154,7 @@ You take the red pill - you stay in Wonderland.`
   {
     name: 'compliment',
     description: 'Get a positive message',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'compliment',
     execute: (): CommandResult => {
       const compliments = [
@@ -175,7 +175,7 @@ You take the red pill - you stay in Wonderland.`
   {
     name: 'insult',
     description: 'Playful roasts',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'insult',
     execute: (): CommandResult => {
       const playfulInsults = [
@@ -200,7 +200,7 @@ ${playfulInsults[Math.floor(Math.random() * playfulInsults.length)]}
   {
     name: 'fortunecookie',
     description: 'Fortune cookie wisdom',
-    category: 'fun',
+    category: 'entertainment',
     usage: 'fortunecookie',
     execute: (): CommandResult => {
       const fortuneCookies = [

@@ -6,7 +6,7 @@ export const helpCommand: Command = {
   description: 'Show available commands',
   category: 'system',
   usage: 'help [category]',
-  examples: ['help', 'help fun', 'help navigation'],
+  examples: ['help', 'help entertainment', 'help games', 'help utilities'],
   execute: (args: string[]): CommandResult => {
     const category = args[0]?.toLowerCase();
     
@@ -26,11 +26,11 @@ export const helpCommand: Command = {
       return Math.min(maxLength + 1, 35);
     };
     
-    if (category === 'fun') {
-      const funCommands = getCommandsByCategory('fun').sort((a, b) => a.name.localeCompare(b.name));
-      const maxLength = getMaxUsageLength(funCommands);
+    if (category === 'entertainment') {
+      const entertainmentCommands = getCommandsByCategory('entertainment').sort((a, b) => a.name.localeCompare(b.name));
+      const maxLength = getMaxUsageLength(entertainmentCommands);
       return {
-        output: `Fun & Interactive Commands:\n${funCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}`
+        output: `Entertainment Commands:\n${entertainmentCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}`
       };
     }
     
@@ -58,18 +58,27 @@ export const helpCommand: Command = {
       };
     }
     
-    if (category === 'interactive') {
-      const interactiveCommands = getCommandsByCategory('interactive').sort((a, b) => a.name.localeCompare(b.name));
-      const maxLength = getMaxUsageLength(interactiveCommands);
+    if (category === 'games') {
+      const gamesCommands = getCommandsByCategory('games').sort((a, b) => a.name.localeCompare(b.name));
+      const maxLength = getMaxUsageLength(gamesCommands);
       return {
-        output: `Interactive Commands:\n${interactiveCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}`
+        output: `Games Commands:\n${gamesCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}`
+      };
+    }
+    
+    if (category === 'utilities') {
+      const utilitiesCommands = getCommandsByCategory('utilities').sort((a, b) => a.name.localeCompare(b.name));
+      const maxLength = getMaxUsageLength(utilitiesCommands);
+      return {
+        output: `Utilities Commands:\n${utilitiesCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}`
       };
     }
     
     // Default help - show all categories
     const systemCommands = getCommandsByCategory('system').sort((a, b) => a.name.localeCompare(b.name));
-    const funCommands = getCommandsByCategory('fun').sort((a, b) => a.name.localeCompare(b.name));
-    const interactiveCommands = getCommandsByCategory('interactive').sort((a, b) => a.name.localeCompare(b.name));
+    const entertainmentCommands = getCommandsByCategory('entertainment').sort((a, b) => a.name.localeCompare(b.name));
+    const gamesCommands = getCommandsByCategory('games').sort((a, b) => a.name.localeCompare(b.name));
+    const utilitiesCommands = getCommandsByCategory('utilities').sort((a, b) => a.name.localeCompare(b.name));
     const infoCommands = getCommandsByCategory('info').sort((a, b) => a.name.localeCompare(b.name));
     const navCommands = getCommandsByCategory('navigation').sort((a, b) => a.name.localeCompare(b.name));
     
@@ -79,7 +88,7 @@ export const helpCommand: Command = {
     const nonEssentialSystemCommands = systemCommands.filter(cmd => !essentialCommands.includes(cmd.name));
     
     // Calculate global max length for consistent alignment across all sections
-    const allCommands = [...generalCommands, ...nonEssentialSystemCommands, ...funCommands, ...interactiveCommands, ...infoCommands, ...navCommands];
+    const allCommands = [...generalCommands, ...nonEssentialSystemCommands, ...entertainmentCommands, ...gamesCommands, ...utilitiesCommands, ...infoCommands, ...navCommands];
     const maxLength = getMaxUsageLength(allCommands);
     
     return {
@@ -89,20 +98,26 @@ ${generalCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
 System Commands:
 ${nonEssentialSystemCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
 
-Fun & Interactive:
-${funCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
-Interactive Tools:
-${interactiveCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
 Information:
 ${infoCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
+
+Entertainment:
+${entertainmentCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
+
+Games:
+${gamesCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
+
+Utilities:
+${utilitiesCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
+
 Navigation:
 ${navCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
 <span class="text-green-400">💡 Tips:</span>
-• Try "help [category]" for specific command groups (e.g., "help fun")
+• Try "help [category]" for specific command groups (e.g., "help entertainment")
 • Use "dy" to explore my professional background
 • Try "coffee-order" or "playlist" to see my preferences
 • Check "bucket-list" to see my personal and professional goals
-• Try "typing-test" to test your coding speed
+• Try "story" for interactive adventures
 • Type "performance" to see website metrics`
     };
   }

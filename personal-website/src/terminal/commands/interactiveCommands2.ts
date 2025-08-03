@@ -4,7 +4,7 @@ export const interactiveCommands2: Command[] = [
   {
     name: 'typing-test',
     description: 'Test your typing speed with code',
-    category: 'interactive',
+    category: 'utilities',
     usage: 'typing-test [difficulty]',
     examples: ['typing-test', 'typing-test easy', 'typing-test hard'],
     execute: (args: string[]): CommandResult => {

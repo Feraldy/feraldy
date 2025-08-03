@@ -46,7 +46,7 @@ export interface CommandResult {
 export interface Command {
   name: string;
   description: string;
-  category: 'system' | 'fun' | 'navigation' | 'interactive' | 'info';
+  category: 'system' | 'navigation' | 'info' | 'entertainment' | 'games' | 'utilities';
   execute: (args: string[], context: TerminalContext) => CommandResult;
   aliases?: string[];
   usage?: string;

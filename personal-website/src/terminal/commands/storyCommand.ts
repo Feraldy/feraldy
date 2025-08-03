@@ -4,7 +4,7 @@ import { getAllStories, getStoryById, getRandomStory, Story } from './stories';
 export const storyCommand: Command = {
   name: 'story',
   description: 'Interactive horror adventures with multiple stories',
-  category: 'interactive',
+  category: 'games',
   usage: 'story',
   examples: ['story', 'story a', 'story list', 'story random', 'story midnight-library', 'story reset'],
   execute: (args: string[], context: TerminalContext): CommandResult => {

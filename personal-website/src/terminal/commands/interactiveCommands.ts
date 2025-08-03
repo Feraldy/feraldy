@@ -443,7 +443,7 @@ export const interactiveCommands: Command[] = [
   {
     name: 'roll',
     description: 'Roll virtual dice with D&D support',
-    category: 'interactive',
+    category: 'utilities',
     usage: 'roll [expression] [adv|dis]',
     examples: ['roll 2d6', 'roll 1d20+5', 'roll 1d20 adv', 'roll 2d6+1d4+3', 'roll 1d20-1 dis'],
     execute: (args: string[], context: TerminalContext): CommandResult => {
@@ -492,7 +492,7 @@ export const interactiveCommands: Command[] = [
   {
     name: 'choose',
     description: 'Pick randomly from options',
-    category: 'interactive',
+    category: 'utilities',
     usage: 'choose [option1] [option2]',
     examples: ['choose pizza pasta salad', 'choose yes no maybe'],
     execute: (args: string[]): CommandResult => {
@@ -517,7 +517,7 @@ Sometimes the best decisions are the ones we don't have to make ourselves!`
   {
     name: 'morse',
     description: 'Convert text to Morse code',
-    category: 'interactive',
+    category: 'utilities',
     usage: 'morse [text]',
     examples: ['morse hello world', 'morse SOS'],
     execute: (args: string[]): CommandResult => {
@@ -552,7 +552,7 @@ Fun fact: Morse code was invented in the 1830s and is still used today!`
   {
     name: 'trivia',
     description: 'Tech quiz questions',
-    category: 'interactive',
+    category: 'games',
     usage: 'trivia',
     execute: (): CommandResult => {
       const triviaQuestions = [
@@ -599,7 +599,7 @@ ${randomTrivia.options.map((opt, i) => `${String.fromCharCode(65 + i)}) ${opt}`)
   {
     name: 'tarot',
     description: 'Mystical card reading - ask a question!',
-    category: 'interactive',
+    category: 'games',
     usage: 'tarot [question]',
     execute: (args: string[], context: TerminalContext): CommandResult => {
       const tarotCards = [

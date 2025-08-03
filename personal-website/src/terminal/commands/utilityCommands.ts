@@ -4,7 +4,7 @@ export const utilityCommands: Command[] = [
   {
     name: 'performance',
     description: 'Show website performance metrics',
-    category: 'system',
+    category: 'utilities',
     usage: 'performance',
     execute: (): CommandResult => ({
       output: `🚀 <span class="text-cyan-400">Website Performance Analysis</span>
@@ -34,7 +34,7 @@ export const utilityCommands: Command[] = [
   {
     name: 'base64',
     description: 'Encode/decode base64 strings',
-    category: 'system',
+    category: 'utilities',
     usage: 'base64 [encode|decode] [text]',
     examples: ['base64 encode hello', 'base64 decode aGVsbG8='],
     execute: (args: string[]): CommandResult => {

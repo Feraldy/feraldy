@@ -4,7 +4,7 @@ export const personalCommands: Command[] = [
   {
     name: 'coffee-order',
     description: 'Order your favorite coffee',
-    category: 'fun',
+    category: 'info',
     usage: 'coffee-order [type]',
     examples: ['coffee-order', 'coffee-order espresso', 'coffee-order latte'],
     execute: (args: string[]): CommandResult => {
@@ -63,7 +63,7 @@ Price: <span class="text-yellow-400">${coffee.price}</span>
   {
     name: 'playlist',
     description: 'Show coding playlist',
-    category: 'fun',
+    category: 'info',
     usage: 'playlist [mood]',
     examples: ['playlist', 'playlist focus', 'playlist chill'],
     execute: (args: string[]): CommandResult => {
