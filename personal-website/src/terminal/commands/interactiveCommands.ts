@@ -2,52 +2,489 @@ import { Command, CommandResult, TerminalContext } from '../types';
 import { tarotAI } from '../../utils/tarotAI';
 import { tarotRateLimiter } from '../../utils/rateLimiter';
 
-export const interactiveCommands: Command[] = [
-  {
-    name: 'roll',
-    description: 'Roll virtual dice',
-    category: 'interactive',
-    usage: 'roll [X]d[Y]',
-    examples: ['roll 2d6', 'roll 1d20', 'roll 3d8'],
-    execute: (args: string[]): CommandResult => {
-      if (args.length === 0) {
-        return {
-          output: 'Invalid dice format. Use: roll [number]d[number] (e.g., "roll 2d6", "roll 1d20")'
-        };
-      }
 
-      const diceMatch = args[0].match(/^(\d+)d(\d+)$/);
+
+interface DiceRoll {
+  numDice: number;
+  numSides: number;
+  rolls: number[];
+  total: number;
+}
+
+interface ParsedExpression {
+  diceRolls: DiceRoll[];
+  modifiers: number[];
+  total: number;
+  hasD20: boolean;
+}
+
+function getDiceFace(_sides: number, value: number): string {
+  return `${value}`;
+}
+
+function getRandomDiceFace(sides: number): string {
+  // Generate a random number within the dice range for animation
+  const randomValue = Math.floor(Math.random() * sides) + 1;
+  return `${randomValue}`;
+}
+
+function rollDice(numDice: number, numSides: number): DiceRoll {
+  const rolls = [];
+  let total = 0;
+  for (let i = 0; i < numDice; i++) {
+    const roll = Math.floor(Math.random() * numSides) + 1;
+    rolls.push(roll);
+    total += roll;
+  }
+  return { numDice, numSides, rolls, total };
+}
+
+function parseDiceExpression(expression: string, hasAdvantage: boolean, hasDisadvantage: boolean, context?: TerminalContext): CommandResult {
+  if (!expression) {
+    throw new Error('Empty expression');
+  }
+
+  // Handle advantage/disadvantage for d20 rolls
+  if ((hasAdvantage || hasDisadvantage) && expression.includes('d20')) {
+    return handleAdvantageDisadvantage(expression, hasAdvantage, context);
+  }
+
+  // Parse the expression into dice and modifiers
+  const parsed = parseExpression(expression);
+  
+  // Generate initial output with rolling animation
+  let output = `🎲 Rolling: <span class="text-cyan-400">${expression}</span>\n\n`;
+  
+  // Show rolling animation for each dice group
+  parsed.diceRolls.forEach((dice) => {
+    const animatedDice = Array(dice.numDice).fill(0).map(() => getRandomDiceFace(dice.numSides));
+    output += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span> [${animatedDice.join(', ')}] = Rolling...\n`;
+  });
+  
+  output += `\n<span class="text-gray-400">🎲 Rolling dice...</span>`;
+  
+  const updateId = `dice-${Date.now()}`;
+  
+  // Animate the dice rolling with multiple frames
+  if (context?.updateCommandOutput) {
+    const animationFrames = 15; // Number of animation frames
+    const baseFrameInterval = 120; // Base interval in ms
+    
+    let currentFrame = 0;
+    
+    const animateFrame = () => {
+      if (currentFrame < animationFrames) {
+        // Generate animated frame
+        let frameOutput = `🎲 Rolling: <span class="text-cyan-400">${expression}</span>\n\n`;
+        
+        parsed.diceRolls.forEach((dice) => {
+          const animatedDice = Array(dice.numDice).fill(0).map(() => getRandomDiceFace(dice.numSides));
+          frameOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span> [${animatedDice.join(', ')}] = Rolling...\n`;
+        });
+        
+        // Add visual feedback based on animation progress
+        const animProgress = currentFrame / animationFrames;
+        let statusMessage = "🎲 Rolling dice";
+        if (animProgress > 0.8) {
+          statusMessage += "... slowing down";
+        } else if (animProgress > 0.5) {
+          statusMessage += "... tumbling";
+        } else {
+          statusMessage += "... spinning fast";
+        }
+        
+        frameOutput += `\n<span class="text-gray-400">${statusMessage}</span>`;
+        
+        if (context.updateCommandOutput) {
+          context.updateCommandOutput(updateId, frameOutput);
+        }
+        currentFrame++;
+        
+        // Calculate next frame interval - slow down as we approach the end
+        const progress = currentFrame / animationFrames;
+        const nextInterval = baseFrameInterval + (progress * baseFrameInterval * 2); // Gradually slow down
+        setTimeout(animateFrame, nextInterval);
+      } else {
+        // Show final results
+        let finalOutput = `🎲 Rolling: <span class="text-cyan-400">${expression}</span>\n\n`;
+        
+        // Show individual dice rolls with final results
+        parsed.diceRolls.forEach((dice) => {
+          const criticalInfo = getCriticalInfo(dice);
+          const diceWithFaces = dice.rolls.map(roll => `${getDiceFace(dice.numSides, roll)}`);
+          finalOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span> [${diceWithFaces.join(', ')}] = ${dice.total}${criticalInfo}\n`;
+        });
+        
+        // Show modifiers if any
+        if (parsed.modifiers.length > 0) {
+          const modifierSum = parsed.modifiers.reduce((sum, mod) => sum + mod, 0);
+          const modifierStr = parsed.modifiers.map(m => m >= 0 ? `+${m}` : `${m}`).join(' ');
+          finalOutput += `<span class="text-gray-400">Modifiers:</span> ${modifierStr} = ${modifierSum}\n`;
+        }
+        
+        finalOutput += `\n<span class="text-green-400">Total: ${parsed.total}</span>\n\n`;
+        
+        // Add flavor text
+        finalOutput += getFlavorText(parsed);
+        
+        if (context.updateCommandOutput) {
+          context.updateCommandOutput(updateId, finalOutput);
+        }
+      }
+    };
+    
+    // Start animation after initial display
+    setTimeout(animateFrame, baseFrameInterval);
+    
+    return {
+      output,
+      isUpdating: true,
+      updateId
+    };
+  } else {
+    // Fallback for when context is not available - show final result immediately
+    let finalOutput = `🎲 Rolling: <span class="text-cyan-400">${expression}</span>\n\n`;
+    
+    parsed.diceRolls.forEach((dice) => {
+      const criticalInfo = getCriticalInfo(dice);
+      const diceWithFaces = dice.rolls.map(roll => `${getDiceFace(dice.numSides, roll)}`);
+      finalOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span> [${diceWithFaces.join(', ')}] = ${dice.total}${criticalInfo}\n`;
+    });
+    
+    if (parsed.modifiers.length > 0) {
+      const modifierSum = parsed.modifiers.reduce((sum, mod) => sum + mod, 0);
+      const modifierStr = parsed.modifiers.map(m => m >= 0 ? `+${m}` : `${m}`).join(' ');
+      finalOutput += `<span class="text-gray-400">Modifiers:</span> ${modifierStr} = ${modifierSum}\n`;
+    }
+    
+    finalOutput += `\n<span class="text-green-400">Total: ${parsed.total}</span>\n\n`;
+    finalOutput += getFlavorText(parsed);
+    
+    return { output: finalOutput };
+  }
+}
+
+function handleAdvantageDisadvantage(expression: string, hasAdvantage: boolean, context?: TerminalContext): CommandResult {
+  const type = hasAdvantage ? 'Advantage' : 'Disadvantage';
+  const emoji = hasAdvantage ? '⬆️' : '⬇️';
+  
+  // Parse the base expression
+  const parsed = parseExpression(expression);
+  
+  // Pre-roll the dice to get final results
+  const finalRolls: { [key: number]: { roll1: DiceRoll, roll2: DiceRoll, chosen: DiceRoll } } = {};
+  
+  parsed.diceRolls.forEach((dice, index) => {
+    if (dice.numSides === 20) {
+      // Roll twice for advantage/disadvantage
+      const roll1 = rollDice(dice.numDice, dice.numSides);
+      const roll2 = rollDice(dice.numDice, dice.numSides);
+      
+      const chosen = hasAdvantage ? 
+        (roll1.total >= roll2.total ? roll1 : roll2) :
+        (roll1.total <= roll2.total ? roll1 : roll2);
+      
+      finalRolls[index] = { roll1, roll2, chosen };
+      
+      // Update the dice roll with the chosen result
+      dice.rolls = chosen.rolls;
+      dice.total = chosen.total;
+    }
+  });
+  
+  // Generate initial animated output
+  let output = `🎲 Rolling with <span class="text-cyan-400">${type}</span> ${emoji}: ${expression}\n\n`;
+  
+  parsed.diceRolls.forEach((dice) => {
+    if (dice.numSides === 20) {
+      const animatedDice1 = Array(dice.numDice).fill(0).map(() => getRandomDiceFace(dice.numSides));
+      const animatedDice2 = Array(dice.numDice).fill(0).map(() => getRandomDiceFace(dice.numSides));
+      
+      output += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span>\n`;
+      output += `  Roll 1: [${animatedDice1.join(', ')}] = Rolling...\n`;
+      output += `  Roll 2: [${animatedDice2.join(', ')}] = Rolling...\n`;
+      output += `  <span class="text-gray-400">Taking ${hasAdvantage ? 'higher' : 'lower'}...</span>\n`;
+    } else {
+      // Regular roll for non-d20 dice
+      const animatedDice = Array(dice.numDice).fill(0).map(() => getRandomDiceFace(dice.numSides));
+      output += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span> [${animatedDice.join(', ')}] = Rolling...\n`;
+    }
+  });
+  
+  output += `\n<span class="text-gray-400">🎲 Rolling dice... spinning fast</span>`;
+  
+  const updateId = `dice-adv-${Date.now()}`;
+  
+  // Animate the dice rolling with multiple frames
+  if (context?.updateCommandOutput) {
+    const animationFrames = 15; // Number of animation frames
+    const baseFrameInterval = 120; // Base interval in ms
+    
+    let currentFrame = 0;
+    
+    const animateFrame = () => {
+      if (currentFrame < animationFrames) {
+        // Generate animated frame
+        let frameOutput = `🎲 Rolling with <span class="text-cyan-400">${type}</span> ${emoji}: ${expression}\n\n`;
+        
+        parsed.diceRolls.forEach((dice) => {
+          if (dice.numSides === 20) {
+            const animatedDice1 = Array(dice.numDice).fill(0).map(() => getRandomDiceFace(dice.numSides));
+            const animatedDice2 = Array(dice.numDice).fill(0).map(() => getRandomDiceFace(dice.numSides));
+            
+            frameOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span>\n`;
+            frameOutput += `  Roll 1: [${animatedDice1.join(', ')}] = Rolling...\n`;
+            frameOutput += `  Roll 2: [${animatedDice2.join(', ')}] = Rolling...\n`;
+            frameOutput += `  <span class="text-gray-400">Taking ${hasAdvantage ? 'higher' : 'lower'}...</span>\n`;
+          } else {
+            const animatedDice = Array(dice.numDice).fill(0).map(() => getRandomDiceFace(dice.numSides));
+            frameOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span> [${animatedDice.join(', ')}] = Rolling...\n`;
+          }
+        });
+        
+        // Add visual feedback based on animation progress
+        const animProgress = currentFrame / animationFrames;
+        let statusMessage = "🎲 Rolling dice";
+        if (animProgress > 0.8) {
+          statusMessage += "... slowing down";
+        } else if (animProgress > 0.5) {
+          statusMessage += "... tumbling";
+        } else {
+          statusMessage += "... spinning fast";
+        }
+        
+        frameOutput += `\n<span class="text-gray-400">${statusMessage}</span>`;
+        
+        if (context.updateCommandOutput) {
+          context.updateCommandOutput(updateId, frameOutput);
+        }
+        currentFrame++;
+        
+        // Calculate next frame interval - slow down as we approach the end
+        const progress = currentFrame / animationFrames;
+        const nextInterval = baseFrameInterval + (progress * baseFrameInterval * 2); // Gradually slow down
+        setTimeout(animateFrame, nextInterval);
+      } else {
+        // Show final results
+        let finalOutput = `🎲 Rolling with <span class="text-cyan-400">${type}</span> ${emoji}: ${expression}\n\n`;
+        
+        parsed.diceRolls.forEach((dice, index) => {
+          if (dice.numSides === 20 && finalRolls[index]) {
+            const { roll1, roll2, chosen } = finalRolls[index];
+            const diceWithFaces1 = roll1.rolls.map(roll => `${getDiceFace(dice.numSides, roll)}`);
+            const diceWithFaces2 = roll2.rolls.map(roll => `${getDiceFace(dice.numSides, roll)}`);
+            
+            finalOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span>\n`;
+            finalOutput += `  Roll 1: [${diceWithFaces1.join(', ')}] = ${roll1.total}\n`;
+            finalOutput += `  Roll 2: [${diceWithFaces2.join(', ')}] = ${roll2.total}\n`;
+            finalOutput += `  <span class="text-green-400">Taking ${hasAdvantage ? 'higher' : 'lower'}: ${chosen.total}</span>${getCriticalInfo(chosen)}\n`;
+          } else {
+            // Regular roll for non-d20 dice
+            const criticalInfo = getCriticalInfo(dice);
+            const diceWithFaces = dice.rolls.map(roll => `${getDiceFace(dice.numSides, roll)}`);
+            finalOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span> [${diceWithFaces.join(', ')}] = ${dice.total}${criticalInfo}\n`;
+          }
+        });
+        
+        // Recalculate total
+        const total = parsed.diceRolls.reduce((sum, dice) => sum + dice.total, 0) + 
+                      parsed.modifiers.reduce((sum, mod) => sum + mod, 0);
+        
+        // Show modifiers if any
+        if (parsed.modifiers.length > 0) {
+          const modifierSum = parsed.modifiers.reduce((sum, mod) => sum + mod, 0);
+          const modifierStr = parsed.modifiers.map(m => m >= 0 ? `+${m}` : `${m}`).join(' ');
+          finalOutput += `<span class="text-gray-400">Modifiers:</span> ${modifierStr} = ${modifierSum}\n`;
+        }
+        
+        finalOutput += `\n<span class="text-green-400">Final Total: ${total}</span>\n\n`;
+        finalOutput += getFlavorText({ ...parsed, total });
+        
+        if (context.updateCommandOutput) {
+          context.updateCommandOutput(updateId, finalOutput);
+        }
+      }
+    };
+    
+    // Start animation after initial display
+    setTimeout(animateFrame, baseFrameInterval);
+    
+    return {
+      output,
+      isUpdating: true,
+      updateId
+    };
+  } else {
+    // Fallback for when context is not available - show final result immediately
+    let finalOutput = `🎲 Rolling with <span class="text-cyan-400">${type}</span> ${emoji}: ${expression}\n\n`;
+    
+    parsed.diceRolls.forEach((dice, index) => {
+      if (dice.numSides === 20 && finalRolls[index]) {
+        const { roll1, roll2, chosen } = finalRolls[index];
+        const diceWithFaces1 = roll1.rolls.map(roll => `${getDiceFace(dice.numSides, roll)}`);
+        const diceWithFaces2 = roll2.rolls.map(roll => `${getDiceFace(dice.numSides, roll)}`);
+        
+        finalOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span>\n`;
+        finalOutput += `  Roll 1: [${diceWithFaces1.join(', ')}] = ${roll1.total}\n`;
+        finalOutput += `  Roll 2: [${diceWithFaces2.join(', ')}] = ${roll2.total}\n`;
+        finalOutput += `  <span class="text-green-400">Taking ${hasAdvantage ? 'higher' : 'lower'}: ${chosen.total}</span>${getCriticalInfo(chosen)}\n`;
+      } else {
+        // Regular roll for non-d20 dice
+        const criticalInfo = getCriticalInfo(dice);
+        const diceWithFaces = dice.rolls.map(roll => `${getDiceFace(dice.numSides, roll)}`);
+        finalOutput += `<span class="text-yellow-400">${dice.numDice}d${dice.numSides}:</span> [${diceWithFaces.join(', ')}] = ${dice.total}${criticalInfo}\n`;
+      }
+    });
+    
+    // Recalculate total
+    const total = parsed.diceRolls.reduce((sum, dice) => sum + dice.total, 0) + 
+                  parsed.modifiers.reduce((sum, mod) => sum + mod, 0);
+    
+    // Show modifiers if any
+    if (parsed.modifiers.length > 0) {
+      const modifierSum = parsed.modifiers.reduce((sum, mod) => sum + mod, 0);
+      const modifierStr = parsed.modifiers.map(m => m >= 0 ? `+${m}` : `${m}`).join(' ');
+      finalOutput += `<span class="text-gray-400">Modifiers:</span> ${modifierStr} = ${modifierSum}\n`;
+    }
+    
+    finalOutput += `\n<span class="text-green-400">Final Total: ${total}</span>\n\n`;
+    finalOutput += getFlavorText({ ...parsed, total });
+    
+    return { output: finalOutput };
+  }
+}
+
+function parseExpression(expression: string): ParsedExpression {
+  const diceRolls: DiceRoll[] = [];
+  const modifiers: number[] = [];
+  let hasD20 = false;
+  
+  // Split by + and - while keeping the operators
+  const parts = expression.split(/([+-])/).filter(part => part.trim() !== '');
+  
+  let currentSign = 1;
+  
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i].trim();
+    
+    if (part === '+') {
+      currentSign = 1;
+    } else if (part === '-') {
+      currentSign = -1;
+    } else {
+      // Check if it's a dice expression
+      const diceMatch = part.match(/^(\d+)d(\d+)$/);
       if (diceMatch) {
         const numDice = parseInt(diceMatch[1]);
         const numSides = parseInt(diceMatch[2]);
-        if (numDice > 0 && numDice <= 20 && numSides > 0 && numSides <= 100) {
-          const rolls = [];
-          let total = 0;
-          for (let i = 0; i < numDice; i++) {
-            const roll = Math.floor(Math.random() * numSides) + 1;
-            rolls.push(roll);
-            total += roll;
-          }
-          return {
-            output: `🎲 Rolling ${numDice}d${numSides}...
-
-Individual rolls: [${rolls.join(', ')}]
-Total: <span class="text-yellow-400">${total}</span>
-
-${total === numDice * numSides ? '🎉 MAXIMUM ROLL! CRITICAL SUCCESS!' : 
-  total === numDice ? '💀 MINIMUM ROLL! CRITICAL FAILURE!' : 
-  total >= (numDice * numSides * 0.8) ? '✨ Excellent roll!' : 
-  total >= (numDice * numSides * 0.6) ? '👍 Good roll!' : 
-  total >= (numDice * numSides * 0.4) ? '😐 Average roll.' : '😬 Could be better...'}`
-          };
-        } else {
-          return {
-            output: 'Invalid dice format. Use: roll [1-20]d[1-100] (e.g., "roll 2d6")'
-          };
+        
+        if (numDice <= 0 || numDice > 20 || numSides <= 0 || numSides > 100) {
+          throw new Error(`Invalid dice: ${part}`);
         }
+        
+        if (numSides === 20) hasD20 = true;
+        
+        const roll = rollDice(numDice, numSides);
+        if (currentSign === -1) {
+          roll.total = -roll.total;
+        }
+        diceRolls.push(roll);
       } else {
+        // It's a modifier
+        const modifier = parseInt(part);
+        if (isNaN(modifier)) {
+          throw new Error(`Invalid modifier: ${part}`);
+        }
+        modifiers.push(modifier * currentSign);
+      }
+      currentSign = 1; // Reset for next iteration
+    }
+  }
+  
+  if (diceRolls.length === 0) {
+    throw new Error('No dice found in expression');
+  }
+  
+  const total = diceRolls.reduce((sum, dice) => sum + Math.abs(dice.total), 0) + 
+                modifiers.reduce((sum, mod) => sum + mod, 0);
+  
+  return { diceRolls, modifiers, total, hasD20 };
+}
+
+function getCriticalInfo(dice: DiceRoll): string {
+  if (dice.numSides === 20 && dice.numDice === 1) {
+    const roll = dice.rolls[0];
+    if (roll === 20) return ' 🎉 <span class="text-yellow-400">CRITICAL HIT!</span>';
+    if (roll === 1) return ' 💀 <span class="text-red-400">CRITICAL FUMBLE!</span>';
+  }
+  return '';
+}
+
+function getFlavorText(parsed: ParsedExpression): string {
+  const { total, hasD20 } = parsed;
+  
+  if (hasD20) {
+    if (total >= 25) return '🌟 <span class="text-yellow-400">Legendary success!</span>';
+    if (total >= 20) return '✨ <span class="text-green-400">Excellent result!</span>';
+    if (total >= 15) return '👍 <span class="text-blue-400">Good roll!</span>';
+    if (total >= 10) return '😐 <span class="text-gray-400">Average result.</span>';
+    if (total >= 5) return '😬 <span class="text-orange-400">Could be better...</span>';
+    return '💀 <span class="text-red-400">Ouch! That hurt.</span>';
+  } else {
+    if (total >= 20) return '🎉 <span class="text-yellow-400">Amazing damage!</span>';
+    if (total >= 15) return '⚔️ <span class="text-green-400">Solid hit!</span>';
+    if (total >= 10) return '👊 <span class="text-blue-400">Good damage!</span>';
+    if (total >= 5) return '😐 <span class="text-gray-400">Decent result.</span>';
+    return '😅 <span class="text-orange-400">Just a scratch...</span>';
+  }
+}
+
+export const interactiveCommands: Command[] = [
+  {
+    name: 'roll',
+    description: 'Roll virtual dice with D&D support',
+    category: 'interactive',
+    usage: 'roll [expression] [adv|dis]',
+    examples: ['roll 2d6', 'roll 1d20+5', 'roll 1d20 adv', 'roll 2d6+1d4+3', 'roll 1d20-1 dis'],
+    execute: (args: string[], context: TerminalContext): CommandResult => {
+      if (args.length === 0) {
         return {
-          output: 'Invalid dice format. Use: roll [number]d[number] (e.g., "roll 2d6", "roll 1d20")'
+          output: `🎲 <span class="text-cyan-400">Dice Roller</span>
+
+<span class="text-yellow-400">Usage:</span>
+• roll 2d6                    - Basic dice roll
+• roll 1d20+5                 - Roll with modifier
+• roll 1d20 adv               - Roll with advantage
+• roll 1d20-2 dis             - Roll with disadvantage
+• roll 2d6+1d4+3              - Multiple dice + modifier
+• roll 1d8+2+1d6              - Complex expressions
+
+<span class="text-green-400">Advantage/Disadvantage:</span>
+• adv = roll twice, take higher
+• dis = roll twice, take lower`
+        };
+      }
+
+      const input = args.join(' ');
+      
+      // Check for advantage/disadvantage
+      const hasAdvantage = /\b(adv|advantage)\b/i.test(input);
+      const hasDisadvantage = /\b(dis|disadvantage)\b/i.test(input);
+      
+      // Remove advantage/disadvantage keywords from expression
+      const expression = input.replace(/\b(adv|advantage|dis|disadvantage)\b/gi, '').trim();
+      
+      try {
+        return parseDiceExpression(expression, hasAdvantage, hasDisadvantage, context);
+      } catch (error) {
+        return {
+          output: `❌ Invalid dice expression: "${expression}"
+
+<span class="text-yellow-400">Valid formats:</span>
+• XdY (e.g., 2d6, 1d20)
+• XdY+Z (e.g., 1d20+5)
+• XdY+XdY+Z (e.g., 2d6+1d4+3)
+• Add "adv" or "dis" for advantage/disadvantage`
         };
       }
     }
