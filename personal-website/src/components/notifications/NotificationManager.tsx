@@ -5,6 +5,7 @@ import {
   NotificationConfig, 
   NotificationAction, 
   NotificationTriggerContext,
+  NotificationTrigger,
   getTriggeredNotifications 
 } from './notificationConfig';
 
@@ -29,6 +30,12 @@ interface ActiveNotification {
   isVisible: boolean;
 }
 
+interface QueuedNotification {
+  id: string;
+  notification: NotificationConfig;
+  trigger: NotificationTrigger;
+}
+
 const NotificationManager: React.FC<NotificationManagerProps> = ({
   onExecuteCommand,
   onOpenContact,
@@ -41,6 +48,7 @@ const NotificationManager: React.FC<NotificationManagerProps> = ({
   const navigate = useNavigate();
   
   const [activeNotifications, setActiveNotifications] = useState<ActiveNotification[]>([]);
+  const [notificationQueue, setNotificationQueue] = useState<QueuedNotification[]>([]);
   const [notificationState, setNotificationState] = useState<NotificationState>({
     shown: new Set(),
     lastShown: new Map(),
@@ -130,7 +138,7 @@ const NotificationManager: React.FC<NotificationManagerProps> = ({
     };
   }, [updateActivity]);
 
-  // Check for triggered notifications
+  // Check for triggered notifications and add to queue
   useEffect(() => {
     if (!isTypingAnimationComplete) return; // Don't show notifications until typing animation is complete
 
@@ -139,8 +147,9 @@ const NotificationManager: React.FC<NotificationManagerProps> = ({
     for (const trigger of triggeredNotifications) {
       const { id, notification, cooldown = 0, maxShows = Infinity } = trigger;
       
-      // Check if already active
+      // Check if already active or queued
       if (activeNotifications.some(active => active.id === id)) continue;
+      if (notificationQueue.some(queued => queued.id === id)) continue;
       
       // Check if already shown too many times
       const showCount = notificationState.showCount.get(id) || 0;
@@ -150,31 +159,64 @@ const NotificationManager: React.FC<NotificationManagerProps> = ({
       const lastShown = notificationState.lastShown.get(id) || 0;
       if (Date.now() - lastShown < cooldown) continue;
       
-      // Add notification to active list
-      const newNotification: ActiveNotification = {
+      // Add to queue instead of directly to active notifications
+      const queuedNotification: QueuedNotification = {
         id,
         notification,
+        trigger
+      };
+      
+      setNotificationQueue(prev => [...prev, queuedNotification]);
+      
+      // Mark welcome as seen if this is the welcome notification
+      if (id === 'welcome') {
+        setContext(prev => ({ ...prev, hasSeenWelcome: true }));
+      }
+    }
+  }, [context, activeNotifications, notificationQueue, notificationState, isTypingAnimationComplete]);
+
+  // Process notification queue with staggered delays
+  useEffect(() => {
+    if (notificationQueue.length === 0) return;
+    
+    // Calculate delay based on device type and current active notifications
+    const isMobile = context.deviceType === 'mobile';
+    const baseDelay = isMobile ? 4000 : 2500; // Longer delay on mobile
+    const perNotificationDelay = isMobile ? 1500 : 1000; // Additional delay per existing notification
+    const totalDelay = baseDelay + (activeNotifications.length * perNotificationDelay);
+    
+    const timer = setTimeout(() => {
+      const nextNotification = notificationQueue[0];
+      if (!nextNotification) return;
+      
+      // Remove from queue
+      setNotificationQueue(prev => prev.slice(1));
+      
+      // Add to active notifications
+      const newNotification: ActiveNotification = {
+        id: nextNotification.id,
+        notification: nextNotification.notification,
         isVisible: true
       };
       
       setActiveNotifications(prev => [...prev, newNotification]);
       
       // Update state
+      const showCount = notificationState.showCount.get(nextNotification.id) || 0;
       setNotificationState(prev => ({
-        shown: new Set([...prev.shown, id]),
-        lastShown: new Map([...prev.lastShown, [id, Date.now()]]),
-        showCount: new Map([...prev.showCount, [id, showCount + 1]])
+        shown: new Set([...prev.shown, nextNotification.id]),
+        lastShown: new Map([...prev.lastShown, [nextNotification.id, Date.now()]]),
+        showCount: new Map([...prev.showCount, [nextNotification.id, showCount + 1]])
       }));
       
-      // Mark welcome as seen if this is the welcome notification
-      if (id === 'welcome') {
-        setContext(prev => ({ ...prev, hasSeenWelcome: true }));
-      }
-      
       // Limit to 3 notifications max to avoid overwhelming
-      if (activeNotifications.length >= 2) break;
-    }
-  }, [context, activeNotifications, notificationState, isTypingAnimationComplete]);
+      if (activeNotifications.length >= 2) {
+        setNotificationQueue([]); // Clear queue if we hit the limit
+      }
+    }, totalDelay);
+    
+    return () => clearTimeout(timer);
+  }, [notificationQueue, activeNotifications, context.deviceType, notificationState]);
 
   const handleAction = (notificationId: string, action: NotificationAction) => {
     switch (action.type) {
@@ -240,13 +282,15 @@ const NotificationManager: React.FC<NotificationManagerProps> = ({
 
   return (
     <>
-      {activeNotifications.map((activeNotification) => (
+      {activeNotifications.map((activeNotification, index) => (
         <MacNotification
           key={activeNotification.id}
           notification={activeNotification.notification}
           onAction={(action) => handleAction(activeNotification.id, action)}
           onDismiss={() => handleDismiss(activeNotification.id)}
           isVisible={activeNotification.isVisible}
+          deviceType={context.deviceType}
+          stackIndex={index}
         />
       ))}
     </>
