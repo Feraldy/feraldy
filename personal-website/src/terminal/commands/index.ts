@@ -4,7 +4,7 @@ import { Command, CommandRegistry } from '../types';
 // Entertainment commands
 import { fortune } from './entertainment/fortune';
 import { weather } from './entertainment/weather';
-import { matrix } from './entertainment/matrix';
+
 import { hack } from './entertainment/hack';
 
 import { joke } from './entertainment/joke';
@@ -79,7 +79,7 @@ const allCommands: Command[] = [
   // Entertainment
   fortune,
   weather,
-  matrix,
+
   hack,
   joke,
   roast,

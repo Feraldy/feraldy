@@ -47,7 +47,7 @@ const helpHints: HelpHint[] = [
     id: 'advanced',
     title: 'Advanced Commands',
     description: 'Power user features and hidden gems.',
-    commands: ['secret', 'matrix', 'tarot', 'roll 2d6'],
+    commands: ['secret', 'tarot', 'roll 2d6'],
     icon: '⚡'
   }
 ];
