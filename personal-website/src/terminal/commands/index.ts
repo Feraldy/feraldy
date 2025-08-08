@@ -48,6 +48,8 @@ import { tarot } from './interactive/tarot';
 
 // Games commands
 import { story } from './games/story';
+import { blackjack } from './games/blackjack';
+import { hangman } from './games/hangman';
 
 // Help command
 import { help } from './help/help';
@@ -102,7 +104,9 @@ const allCommands: Command[] = [
   tarot,
   
   // Games
-  story
+  story,
+  blackjack,
+  hangman
 ];
 
 // Create command registry

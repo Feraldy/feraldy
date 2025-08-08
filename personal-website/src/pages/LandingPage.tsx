@@ -32,6 +32,8 @@ const LandingPage: React.FC = () => {
   const [commandHistory, setCommandHistory] = useState<CommandHistoryItem[]>([]);
   const [currentStoryState, setCurrentStoryState] = useState<string | null>(null);
   const [currentStoryId, setCurrentStoryId] = useState<string | null>(null);
+  const [blackjackState, setBlackjackState] = useState<any>(null);
+  const [hangmanState, setHangmanState] = useState<any>(null);
   const [selectedBlogStory, setSelectedBlogStory] = useState<string | null>(null);
 
   // Enhanced features state
@@ -193,6 +195,10 @@ const LandingPage: React.FC = () => {
       setCurrentStoryState,
       currentStoryId,
       setCurrentStoryId,
+      blackjackState,
+      setBlackjackState,
+      hangmanState,
+      setHangmanState,
       tabs,
       setTabs,
       activeTabId,

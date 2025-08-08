@@ -16,6 +16,10 @@ export interface TerminalContext {
   setCurrentStoryState: React.Dispatch<React.SetStateAction<string | null>>;
   currentStoryId: string | null;
   setCurrentStoryId: React.Dispatch<React.SetStateAction<string | null>>;
+  blackjackState?: any;
+  setBlackjackState?: React.Dispatch<React.SetStateAction<any>>;
+  hangmanState?: any;
+  setHangmanState?: React.Dispatch<React.SetStateAction<any>>;
   tabs?: TerminalTab[];
   setTabs?: React.Dispatch<React.SetStateAction<TerminalTab[]>>;
   activeTabId?: string;
