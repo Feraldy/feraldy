@@ -1,29 +1,108 @@
 import { Command, CommandRegistry } from '../types';
-import { systemCommands } from './systemCommands';
-import { navigationCommands } from './navigationCommands';
-import { infoCommands } from './infoCommands';
-import { funCommands } from './funCommands';
-import { interactiveCommands } from './interactiveCommands';
-import { interactiveCommands2 } from './interactiveCommands2';
-import { helpCommand } from './helpCommand';
-import { storyCommand } from './storyCommand';
-import { tabCommands } from './tabCommands';
-import { utilityCommands } from './utilityCommands';
-import { personalCommands } from './personalCommands';
+
+// Import individual commands
+// Entertainment commands
+import { fortune } from './entertainment/fortune';
+import { weather } from './entertainment/weather';
+import { matrix } from './entertainment/matrix';
+import { hack } from './entertainment/hack';
+
+import { joke } from './entertainment/joke';
+import { roast } from './entertainment/roast';
+
+// System commands
+import { clear } from './system/clear';
+import { ls } from './system/ls';
+import { pwd } from './system/pwd';
+import { whoami } from './system/whoami';
+import { date } from './system/date';
+
+// Info commands
+import { dy } from './info/dy';
+
+// Navigation commands
+import { cd } from './navigation/cd';
+import { projects } from './navigation/projects';
+import { resume } from './navigation/resume';
+import { blog } from './navigation/blog';
+import { contact } from './navigation/contact';
+
+// Personal commands
+import { playlist } from './personal/playlist';
+
+// Tab commands
+import { tabs } from './tab/tabs';
+import { close } from './tab/close';
+import { switchTab } from './tab/switch';
+
+// Utility commands
+import { performance } from './utility/performance';
+import { base64 } from './utility/base64';
+
+// Interactive commands
+import { roll } from './interactive/roll';
+import { choose } from './interactive/choose';
+import { morse } from './interactive/morse';
+import { trivia } from './interactive/trivia';
+import { tarot } from './interactive/tarot';
+
+// Games commands
+import { story } from './games/story';
+
+// Help command
+import { help } from './help/help';
 
 // Combine all commands
 const allCommands: Command[] = [
-  helpCommand,
-  storyCommand,
-  ...systemCommands,
-  ...navigationCommands,
-  ...infoCommands,
-  ...funCommands,
-  ...interactiveCommands,
-  ...interactiveCommands2,
-  ...utilityCommands,
-  ...personalCommands,
-  ...tabCommands
+  // Help
+  help,
+  
+  // System
+  clear,
+  ls,
+  pwd,
+  whoami,
+  date,
+  
+  // Navigation
+  cd,
+  projects,
+  resume,
+  blog,
+  contact,
+  
+  // Info
+  dy,
+  
+  // Entertainment
+  fortune,
+  weather,
+  matrix,
+  hack,
+  joke,
+  roast,
+  
+  // Personal
+  playlist,
+  
+  // Tab management
+  tabs,
+  close,
+  switchTab,
+  
+  // Utilities
+  performance,
+  base64,
+  
+  // Interactive
+  roll,
+  choose,
+  morse,
+  trivia,
+  tarot,
+  
+  // Games
+  story
 ];
 
 // Create command registry

@@ -1,7 +1,7 @@
-import { Command, CommandResult } from '../types';
-import { getCommandsByCategory } from './commandUtils';
+import { Command, CommandResult } from '../../types';
+import { getCommandsByCategory } from '../commandUtils';
 
-export const helpCommand: Command = {
+export const help: Command = {
   name: 'help',
   description: 'Show available commands',
   category: 'system',
@@ -83,7 +83,7 @@ export const helpCommand: Command = {
     const navCommands = getCommandsByCategory('navigation').sort((a, b) => a.name.localeCompare(b.name));
     
     // Get some essential commands for the general section
-    const essentialCommands = ['clear', 'help', 'ls', 'pwd', 'whoami', 'version'];
+    const essentialCommands = ['clear', 'help', 'ls', 'pwd', 'whoami'];
     const generalCommands = systemCommands.filter(cmd => essentialCommands.includes(cmd.name));
     const nonEssentialSystemCommands = systemCommands.filter(cmd => !essentialCommands.includes(cmd.name));
     
@@ -118,7 +118,8 @@ ${navCommands.map(cmd => `  ${formatCommand(cmd, maxLength)}`).join('\n')}
 • Try "coffee-order" or "playlist" to see my preferences
 • Check "bucket-list" to see my personal and professional goals
 • Try "story" for interactive adventures
-• Type "performance" to see website metrics`
+• Use "fortune code" or "joke dad" for specific content types
+• Try "roast nice" or "roast mean" for different vibes`
     };
   }
 };

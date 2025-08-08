@@ -1,19 +1,18 @@
-import { Command, TerminalContext, CommandResult } from '../types';
+import { Command, CommandResult } from '../../types';
 
-export const infoCommands: Command[] = [
-  {
-    name: 'dy',
-    description: 'Show personal info menu',
-    category: 'info',
-    usage: 'dy [--option]',
-    examples: ['dy --history', 'dy --skills', 'dy --achievements'],
-    execute: (args: string[]): CommandResult => {
-      const option = args[0];
-      
-      switch (option) {
-        case '--history':
-          return {
-            output: `Career Timeline:
+export const dy: Command = {
+  name: 'dy',
+  description: 'Show personal info menu',
+  category: 'info',
+  usage: 'dy [--option]',
+  examples: ['dy --history', 'dy --skills', 'dy --achievements'],
+  execute: (args: string[]): CommandResult => {
+    const option = args[0];
+    
+    switch (option) {
+      case '--history':
+        return {
+          output: `Career Timeline:
 2024-Present  Test Engineer & Project Manager
               • RiddleStory / Enboq
               • QA Process, E2E Testing, PRDs
@@ -28,11 +27,11 @@ export const infoCommands: Command[] = [
 
 Education:
               • B.Sc. Computer Science - ITS (2018-2022)`
-          };
-          
-        case '--tree':
-          return {
-            output: `Skills Tree:
+        };
+        
+      case '--tree':
+        return {
+          output: `Skills Tree:
 ├── Quality Assurance
 │   ├── Test Planning & Strategy
 │   ├── Automation (Playwright, Selenium, Appium)
@@ -50,11 +49,11 @@ Education:
     ├── Qase.io, ClickUp
     ├── Git/GitHub, Jenkins
     └── CI/CD, Node.js`
-          };
-          
-        case '--skills':
-          return {
-            output: `Technical Skills:
+        };
+        
+      case '--skills':
+        return {
+          output: `Technical Skills:
 
 Quality Assurance:
    • Test Automation      ███████████  Advanced
@@ -72,11 +71,11 @@ Tools:
    • Qase.io              ████████████ Expert
    • ClickUp              ██████████   Advanced
    • Jenkins              ████████     Intermediate`
-          };
-          
-        case '--achievements':
-          return {
-            output: `Achievements Unlocked:
+        };
+        
+      case '--achievements':
+        return {
+          output: `Achievements Unlocked:
 
 Test Engineer (2021-Present)
    3+ years of professional experience
@@ -94,11 +93,11 @@ Team Player
    Strong collaboration with dev & product teams
 
 Next Achievement: Senior Test Engineer`
-          };
-          
-        case '--top':
-          return {
-            output: `Top Skills & Projects:
+        };
+        
+      case '--top':
+        return {
+          output: `Top Skills & Projects:
 
 Hot Skills:
 1. QA Automation          ███████████  90%
@@ -115,11 +114,11 @@ Focus Areas:
 • QA Process Implementation
 • E2E & API Automation
 • Product Requirement Docs`
-          };
-          
-        default:
-          return {
-            output: `Running Version 1.1.0
+        };
+        
+      default:
+        return {
+          output: `Running Version 1.1.0
 
 Usage: >
   <span class="text-yellow-400">dy --history</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's history
@@ -127,62 +126,7 @@ Usage: >
   <span class="text-yellow-400">dy --skills</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show feraldy's skills & expertise
   <span class="text-yellow-400">dy --achievements</span>&nbsp;&nbsp;- Show feraldy's achievements
   <span class="text-yellow-400">dy --top</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Show top skills & projects`
-          };
-      }
-    }
-  },
-  {
-    name: 'manual',
-    description: 'Show user manual',
-    category: 'info',
-    usage: 'manual',
-    execute: (): CommandResult => ({
-      output: `FERALDY(1)                    User Manual                    FERALDY(1)
-
-NAME
-     feraldy - Test Engineer and Project Manager
-
-SYNOPSIS
-     feraldy [--role=test-engineer|project-manager] [--coffee=required]
-
-DESCRIPTION
-     Feraldy is a dedicated Test Engineer and Project Manager with over 3 years
-     of experience in quality assurance and product development.
-
-OPTIONS
-     --experience    3+ years in QA and Product Development
-     --skills        Playwright, TypeScript, Python, Qase.io, ClickUp
-     --passion       QA automation, process improvement, product management
-     --location      Netherlands - Remote
-
-EXAMPLES
-     feraldy --role=test-engineer   # Professional QA mode
-     feraldy --role=project-manager # Efficient PM mode
-
-SEE ALSO
-     /projects, resume (terminal command), /contact
-
-AUTHOR
-     Feraldy Nathanael <fn.archived@gmail.com>`
-    })
-  },
-  {
-    name: 'mood',
-    description: 'Show current mood',
-    category: 'entertainment',
-    usage: 'mood',
-    execute: (): CommandResult => {
-      const moods = [
-        "Optimistic and ready to tackle new challenges!",
-        "Motivated and focused on continuous improvement",
-        "Creative and solution-oriented",
-        "Determined to deliver quality results",
-        "Caffeinated and productive",
-        "Enthusiastic about learning new technologies"
-      ];
-      return {
-        output: moods[Math.floor(Math.random() * moods.length)]
-      };
+        };
     }
   }
-];
+};

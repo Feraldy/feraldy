@@ -20,17 +20,19 @@ export interface Story {
 }
 
 // Import all stories
-import { midnightLibraryStory } from './midnightLibrary';
-import { hauntedMansionStory } from './hauntedMansion';
-import { cursedForestStory } from './cursedForest';
+import { blackwoodManorStory } from './blackwoodManor';
+import { labExperimentStory } from './labExperiment';
+import { forgottenMemoriesStory } from './forgottenMemories';
+import { woodsWorldStory } from './woodsWorld';
 
 // Export stories
-export { midnightLibraryStory, hauntedMansionStory, cursedForestStory };
+export { blackwoodManorStory, labExperimentStory, forgottenMemoriesStory, woodsWorldStory };
 
 export const getAllStories = (): Story[] => [
-  midnightLibraryStory,
-  hauntedMansionStory,
-  cursedForestStory
+  blackwoodManorStory,
+  labExperimentStory,
+  forgottenMemoriesStory,
+  woodsWorldStory
 ];
 
 export const getStoryById = (id: string): Story | undefined => {
