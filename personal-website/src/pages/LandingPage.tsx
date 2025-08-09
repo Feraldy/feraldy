@@ -75,7 +75,7 @@ const LandingPage: React.FC = () => {
   // Handle blog story navigation from projects
   const handleBlogStoryClick = (storySlug: string) => {
     setSelectedBlogStory(storySlug);
-    setSearchParams({ story: storySlug });
+    setSearchParams({ tab: 'blog', story: storySlug });
     const blogTab = tabs.find(tab => tab.type === 'blog');
     if (blogTab && !blogTab.disabled) {
       setTabs(tabs.map(tab => ({ ...tab, isActive: tab.id === blogTab.id })));
@@ -83,13 +83,36 @@ const LandingPage: React.FC = () => {
     }
   };
 
-  // Handle URL parameters on load
+  // Handle URL parameters on load for tab persistence
   useEffect(() => {
+    const tabParam = searchParams.get('tab');
     const storyParam = searchParams.get('story');
+    
+    // Handle story parameter (legacy support)
     if (storyParam) {
       setSelectedBlogStory(storyParam);
+    }
+    
+    // Handle tab parameter for persistence
+    if (tabParam && ['resume', 'projects', 'blog'].includes(tabParam)) {
+      const targetTabType = tabParam as 'resume' | 'projects' | 'blog';
       
-      // Enable blog tab immediately and switch to it
+      setTabs(prevTabs => {
+        const updatedTabs = prevTabs.map(tab => ({
+          ...tab,
+          disabled: false, // Enable all tabs when navigating via URL
+          isActive: tab.type === targetTabType
+        }));
+        
+        const targetTab = updatedTabs.find(tab => tab.type === targetTabType);
+        if (targetTab) {
+          setActiveTabId(targetTab.id);
+        }
+        
+        return updatedTabs;
+      });
+    } else if (storyParam && !tabParam) {
+      // Legacy support: if only story param exists, default to blog tab
       setTabs(prevTabs => {
         const updatedTabs = prevTabs.map(tab => ({
           ...tab,
@@ -97,7 +120,6 @@ const LandingPage: React.FC = () => {
           isActive: tab.type === 'blog'
         }));
         
-        // Set active tab to blog
         const blogTab = updatedTabs.find(tab => tab.type === 'blog');
         if (blogTab) {
           setActiveTabId(blogTab.id);
@@ -123,31 +145,7 @@ const LandingPage: React.FC = () => {
     }
   }, [commandHistory, activeTabId]);
 
-  // Handle URL hash for terminal tabs
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1);
-      if (hash.startsWith('terminal-')) {
-        const tabType = hash.replace('terminal-', '') as 'resume' | 'projects' | 'blog';
-        if (['resume', 'projects', 'blog'].includes(tabType)) {
-          const existingTab = tabs.find(tab => tab.type === tabType);
-          if (existingTab && !existingTab.disabled) {
-            setTabs(prevTabs => 
-              prevTabs.map(tab => ({ ...tab, isActive: tab.id === existingTab.id }))
-            );
-            setActiveTabId(existingTab.id);
-          }
-        }
-      }
-    };
 
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
-  }, [tabs]);
 
   // Enable tabs when navigation phase is reached
   useEffect(() => {
@@ -279,6 +277,16 @@ const LandingPage: React.FC = () => {
         prevTabs.map(tab => ({ ...tab, isActive: tab.id === existingTab.id }))
       );
       
+      // Update URL when opening tab via command
+      const newParams: Record<string, string> = { tab: type };
+      
+      // Preserve story parameter if opening blog tab
+      if (type === 'blog' && selectedBlogStory) {
+        newParams.story = selectedBlogStory;
+      }
+      
+      setSearchParams(newParams);
+      
       // Scroll terminal content to top when opening a new tab
       setTimeout(() => {
         if (terminalContentRef.current) {
@@ -305,13 +313,24 @@ const LandingPage: React.FC = () => {
       setIsTabLoading(false);
       setLoadingTabId(null);
 
+      // Update URL based on tab type
       if (targetTab.type !== 'main') {
+        const newParams: Record<string, string> = { tab: targetTab.type };
+        
+        // Preserve story parameter if switching to blog tab
+        if (targetTab.type === 'blog' && selectedBlogStory) {
+          newParams.story = selectedBlogStory;
+        }
+        
+        setSearchParams(newParams);
+        
         // Scroll terminal content to top when switching to a content tab
         if (terminalContentRef.current) {
           terminalContentRef.current.scrollTo({ top: 0, behavior: 'auto' });
         }
       } else {
-        window.location.hash = '';
+        // Clear URL parameters when switching to main terminal
+        setSearchParams({});
       }
     }, ANIMATION_TIMINGS.TAB_LOADING_DELAY);
   };
@@ -328,7 +347,10 @@ const LandingPage: React.FC = () => {
           isActive: tab.id === 'main'
         }));
         setActiveTabId('main');
-        window.location.hash = '';
+        
+        // Clear URL parameters when closing active tab and returning to main
+        setSearchParams({});
+        
         return updatedTabs;
       }
       

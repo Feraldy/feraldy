@@ -2,7 +2,7 @@
 title: "Welcome to My Blog"
 slug: "welcome"
 excerpt: "Welcome to my personal blog! This is where I'll share my thoughts on development, tools, and technology."
-date: "2025-01-19"
+date: "2025-08-09"
 category: "blog-post"
 is_new: true
 ---

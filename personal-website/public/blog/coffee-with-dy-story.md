@@ -2,7 +2,7 @@
 title: "Building Coffee With Dy: a Manual Brew Calculator"
 slug: "coffee-with-dy-story"
 excerpt: "Discover how my passion for coffee brewing led to the creation of CoffeeWith-DY, a practical app that simplifies recipe scaling for manual brews using methods like the 4:6 Tetsu technique."
-date: "2025-01-10"
+date: "2025-08-09"
 category: "project-story"
 project: "coffee-with-dy"
 is_new: true
