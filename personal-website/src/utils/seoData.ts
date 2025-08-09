@@ -34,7 +34,7 @@ export interface StructuredData {
   sameAs?: string[];
 }
 
-const baseUrl = 'https://feraldy.dev'; // Update with your actual domain
+const baseUrl = 'https://feraldy.dev';
 
 export const seoData: Record<string, SEOPageData> = {
   '/': {
@@ -53,7 +53,7 @@ export const seoData: Record<string, SEOPageData> = {
       'agile',
       'scrum'
     ],
-    image: `${baseUrl}/og-images/home.jpg`,
+    image: `${baseUrl}/og-images/home.svg`,
     type: 'website'
   },
   '/projects': {
@@ -71,7 +71,7 @@ export const seoData: Record<string, SEOPageData> = {
       'frontend development',
       'tailwind css'
     ],
-    image: `${baseUrl}/og-images/projects.jpg`,
+    image: `${baseUrl}/og-images/projects.svg`,
     type: 'website'
   },
 
@@ -89,7 +89,7 @@ export const seoData: Record<string, SEOPageData> = {
       'automation tips',
       'development process'
     ],
-    image: `${baseUrl}/og-images/blog.jpg`,
+    image: `${baseUrl}/og-images/blog.svg`,
     type: 'blog'
   },
   '/photography': {
@@ -103,8 +103,51 @@ export const seoData: Record<string, SEOPageData> = {
       'personal projects',
       'artistic expression'
     ],
-    image: `${baseUrl}/og-images/photography.jpg`,
+    image: `${baseUrl}/og-images/photography.svg`,
     type: 'website'
+  }
+};
+
+// Function to extract blog post metadata from markdown frontmatter
+export const getBlogPostSEO = async (slug: string): Promise<SEOPageData | null> => {
+  try {
+    const response = await fetch(`/blog/${slug}.md`);
+    if (!response.ok) return null;
+    
+    const content = await response.text();
+    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+    
+    if (!frontmatterMatch) return null;
+    
+    const frontmatter = frontmatterMatch[1];
+    const titleMatch = frontmatter.match(/title:\s*["'](.+?)["']/);
+    const excerptMatch = frontmatter.match(/excerpt:\s*["'](.+?)["']/);
+    const dateMatch = frontmatter.match(/date:\s*["'](.+?)["']/);
+    
+    const title = titleMatch ? titleMatch[1] : slug;
+    const excerpt = excerptMatch ? excerptMatch[1] : '';
+    const date = dateMatch ? dateMatch[1] : '';
+    
+    return {
+      title: `${title} - Feraldy Nathanael`,
+      description: excerpt || `Read about ${title} on Feraldy's technical blog covering software testing, QA automation, and web development.`,
+      keywords: [
+        'blog',
+        'technical writing',
+        'software testing',
+        'qa automation',
+        'web development',
+        title.toLowerCase(),
+        ...excerpt.toLowerCase().split(' ').filter(word => word.length > 3).slice(0, 3)
+      ],
+      image: `${baseUrl}/og-images/blog.svg`,
+      type: 'article',
+      publishedTime: date,
+      modifiedTime: date
+    };
+  } catch (error) {
+    console.warn('Failed to fetch blog post metadata:', error);
+    return null;
   }
 };
 

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
-import { getPageSEO, generateStructuredData, generateCanonicalUrl, generateImageUrl } from '../utils/seoData';
+import { getPageSEO, getBlogPostSEO, generateStructuredData, generateCanonicalUrl, generateImageUrl, SEOPageData } from '../utils/seoData';
 
 interface SEOProps {
   title?: string;
@@ -10,18 +10,44 @@ interface SEOProps {
   image?: string;
   url?: string;
   type?: string;
+  blogSlug?: string; // For dynamic blog post SEO
 }
 
 const SEO: React.FC<SEOProps> = (props) => {
   const location = useLocation();
-  const pageData = getPageSEO(location.pathname);
+  const [dynamicPageData, setDynamicPageData] = useState<SEOPageData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Load dynamic blog post data if blogSlug is provided
+  useEffect(() => {
+    if (props.blogSlug) {
+      setIsLoading(true);
+      getBlogPostSEO(props.blogSlug)
+        .then(blogData => {
+          setDynamicPageData(blogData);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setDynamicPageData(null);
+    }
+  }, [props.blogSlug]);
+  
+  const pageData = dynamicPageData || getPageSEO(location.pathname);
   const structuredData = generateStructuredData(location.pathname);
+  
+  // Show loading state for dynamic content
+  if (isLoading) {
+    return <Helmet><title>Loading... - Feraldy Nathanael</title></Helmet>;
+  }
   
   // Use props if provided, otherwise fall back to page data
   const title = props.title || pageData.title;
   const description = props.description || pageData.description;
   const keywords = props.keywords || pageData.keywords;
-  const image = generateImageUrl(props.image || pageData.image || '/og-images/default.jpg');
+  const image = generateImageUrl(props.image || pageData.image || '/og-images/default.svg');
   const url = props.url || generateCanonicalUrl(location.pathname);
   const type = props.type || pageData.type || 'website';
   

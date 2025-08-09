@@ -260,9 +260,14 @@ const LandingPage: React.FC = () => {
     executeCommand(suggestion);
   };
 
+  // Clear screen function for Ctrl+L
+  const handleClearScreen = () => {
+    setCommandHistory([]);
+  };
+
   // Wrap terminal key down to include command execution
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    terminalKeyDown(e, executeCommand);
+    terminalKeyDown(e, executeCommand, handleClearScreen);
   };
 
   // Tab management functions

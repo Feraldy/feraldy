@@ -2,93 +2,60 @@
 title: "Well Balance: Building a Wellness Tracker"
 slug: "well-balance-story"
 excerpt: "The story behind building Well Balance - a comprehensive wellness tracking app. From concept to deployment, here's why I built it and the challenges I overcame."
-date: "2025-01-15"
+date: "2025-08-9"
 category: "project-story"
 project: "well-balance"
+is_new: true
 ---
 
 # Well Balance: Building a Wellness Tracker
 
-## The Problem That Started It All
+# The Problem That Start It All
 
-In early 2024, I found myself struggling to maintain a healthy work-life balance. Like many developers, I was spending long hours coding, often forgetting to take breaks, drink water, or even eat properly. I realized I needed a way to track and improve my daily wellness habits.
+Working from home has become the new normal for many of us, and while it offers flexibility, it also comes with a significant challenge — **staying physically active**. For me, during the height of working from home, I found myself sitting down for more than 14 hours a day: 9 hours of work, and another 5 hours of play or entertainment. This sedentary lifestyle was beginning to take a toll on my health and energy levels.
 
-## Why I Built Well Balance
+## The Spark: A Simple Reminder to Move
 
-While there are many wellness apps out there, I wanted something that was:
-- **Simple and intuitive** - No overwhelming features or complex interfaces
-- **Focused on daily habits** - Track the basics that matter most
-- **Visually appealing** - A dashboard that motivates rather than intimidates
-- **Fast and responsive** - Built with modern web technologies
+I wanted a simple, effective way to remind myself to **take breaks and walk regularly** throughout the day. This led me to create a small web tool that would alert me to walk for a few minutes after every set number of hours spent sitting. The idea was straightforward — build something for myself to encourage healthy habits while working and relaxing at home.
 
-## The Technical Journey
+## Personal Experience and Learning Journey
 
-### Technology Stack
-I chose **React** and **Next.js** for the frontend because:
-- Server-side rendering for better performance
-- Built-in routing and optimization
-- Great developer experience
+While researching, I discovered many popular techniques and methods for maintaining health and balance during long work sessions—like the **20-20-20 method** for eye health and the **Pomodoro technique** for productivity and breaks. These inspired parts of the design and functionality of my tool.
 
-**Tailwind CSS** was perfect for:
-- Rapid prototyping of the UI
-- Consistent design system
-- Responsive design out of the box
+At the same time, I was rediscovering my passion for front-end development. I wanted to deepen my skills, so I chose to build what became WellBalance using **React** and **Next.js**, with **Material-UI (MUI)** to help with the interface components. The project became both a practical tool and a learning experience.
 
-### Key Features Implemented
+The product is **gimmicky and experimental** in UI/UX design, and definitely a work in progress. However, it’s **fully functional** and meets my core needs: a walk reminder, a note-taking feature, and a simple to-do tracker. WellBalance represents a meaningful step forward in my coding journey and personal productivity.
 
-**Dashboard Overview**
-- Daily habit tracking with visual progress indicators
-- Weekly and monthly trend analysis
-- Motivational quotes and tips
+## Building WellBalance: From Idea to Reality
 
-**Habit Categories**
-- Hydration tracking
-- Exercise logging
-- Sleep quality monitoring
-- Nutrition awareness
-- Mental wellness check-ins
+The project evolved from a simple reminder tool into a suite of small but practical web utilities hosted at [WellBalance](https://wellbalance.vercel.app). Here’s how I approached the creation:
 
-**Progress Visualization**
-- Clean, minimalist charts
-- Color-coded progress indicators
-- Achievement badges and milestones
+- **Identifying the Need:** Targeting the problem of prolonged sedentary behavior and lack of regular breaks.
+- **Designing the Core Features:** Customizable timers for walking reminders, notes, and task tracking.
+- **Technologies:** Built with React and Next.js for a modern, responsive front-end experience, using Material-UI for UI components.
+- **Experimental UI/UX:** While the interface is not fully polished, it focuses on usability and learning new front-end concepts.
+- **Deployment:** Hosted on Vercel for smooth, easy access anywhere.
 
-## Challenges and Solutions
+## Outcome and Future Thoughts
 
-### Challenge 1: Data Persistence
-**Problem**: How to store user data without a complex backend?
-**Solution**: Implemented local storage with data export/import functionality for user control.
+Creating WellBalance helped me address my sedentary lifestyle and motivated me to explore how technology can promote healthier habits. While the tools are simple, they form a foundation for future enhancements and more comprehensive productivity and wellness solutions.
 
-### Challenge 2: Motivation and Engagement
-**Problem**: How to keep users engaged with their wellness journey?
-**Solution**: Added streak tracking, achievement badges, and positive reinforcement messages.
+If you’re facing similar challenges balancing work, health, and leisure—especially while working from home—I encourage you to check out [WellBalance](https://wellbalance.vercel.app) and consider building or using simple tools like this to support your well-being.
 
-### Challenge 3: Mobile Responsiveness
-**Problem**: Ensuring the dashboard works perfectly on all devices.
-**Solution**: Mobile-first design approach with Tailwind's responsive utilities.
-
-## What I Learned
-
-Building Well Balance taught me:
-- The importance of user-centered design
-- How to create engaging data visualizations
-- The power of simple, focused applications
-- The value of iterative development and user feedback
-
-## The Impact
-
-Since launching Well Balance, I've:
-- Improved my own daily wellness habits
-- Received positive feedback from users
-- Learned valuable lessons about product development
-- Built a foundation for future wellness-focused projects
 
 ## Try It Yourself
 
-Well Balance is live at [well-balance.vercel.app](https://well-balance.vercel.app). It's completely free to use and requires no sign-up - your data stays private on your device.
+WellBalance is live at [wellbalance.vercel.app](https://wellbalance.vercel.app). It's completely free to use and requires no sign-up - your data stays private on your device.
+
+**Please note:** All your notes and to-do items are saved locally in your browser's localStorage. This means that your data **never leaves your device**, but it also means that if you clear your browser data, switch browsers, or devices, your saved information will be lost. Therefore, **avoid storing any credentials, confidential, or sensitive information** in the notes or to-do sections.
 
 The project represents my belief that technology should enhance our well-being, not detract from it. Sometimes the best solutions are the simplest ones.
 
 ---
 
 *Want to build something similar? Feel free to reach out - I'd love to share more technical details and lessons learned!*
+
+---
+
+*Written by Feraldy*  
+*Date: August 9, 2025*

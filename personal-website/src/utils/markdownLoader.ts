@@ -89,6 +89,7 @@ const loadAllBlogPosts = async (): Promise<BlogPost[]> => {
   const blogFiles = [
     'welcome.md',
     'well-balance-story.md',
+    'well-balance-2-story.md',
     'coffee-with-dy-story.md'
   ];
 

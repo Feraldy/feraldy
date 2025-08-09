@@ -38,6 +38,13 @@ const CommandSuggestions: React.FC<CommandSuggestionsProps> = ({
           Use ↑↓ to navigate, Tab or Enter to select
         </div>
       </div>
+      <div className="border-t border-gray-700 p-2">
+        <div className="text-xs text-gray-500 space-y-1">
+          <div><kbd className="bg-gray-700 px-1 rounded text-xs">↑↓</kbd> Command history</div>
+          <div><kbd className="bg-gray-700 px-1 rounded text-xs">Ctrl+A/E</kbd> Line start/end</div>
+          <div><kbd className="bg-gray-700 px-1 rounded text-xs">Ctrl+L</kbd> Clear screen</div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,62 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#161b22;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#21262d;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#161b22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Terminal Window -->
+  <rect x="100" y="100" width="1000" height="430" rx="12" fill="#1c2128" stroke="#30363d" stroke-width="2"/>
+  
+  <!-- Terminal Header -->
+  <rect x="100" y="100" width="1000" height="40" rx="12" fill="#21262d"/>
+  <rect x="100" y="128" width="1000" height="2" fill="#30363d"/>
+  
+  <!-- Terminal Dots -->
+  <circle cx="130" cy="120" r="6" fill="#ff5f56"/>
+  <circle cx="150" cy="120" r="6" fill="#ffbd2e"/>
+  <circle cx="170" cy="120" r="6" fill="#27ca3f"/>
+  
+  <!-- Terminal Title -->
+  <text x="600" y="125" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="14">feraldy@portfolio:~</text>
+  
+  <!-- Terminal Content -->
+  <text x="130" y="180" fill="#58a6ff" font-family="monospace" font-size="16">feraldy@portfolio</text>
+  <text x="280" y="180" fill="#f0f6fc" font-family="monospace" font-size="16">:</text>
+  <text x="290" y="180" fill="#79c0ff" font-family="monospace" font-size="16">~</text>
+  <text x="310" y="180" fill="#f0f6fc" font-family="monospace" font-size="16">$ whoami</text>
+  
+  <text x="130" y="210" fill="#f0f6fc" font-family="monospace" font-size="14">feraldy - Test Engineer &amp; Project Manager</text>
+  
+  <!-- Welcome Message -->
+  <rect x="130" y="230" width="4" height="80" fill="#f1e05a"/>
+  <text x="150" y="250" fill="#f1e05a" font-family="monospace" font-size="14">Hi, I'm Feraldy Nathanael!</text>
+  <text x="150" y="270" fill="#f1e05a" font-family="monospace" font-size="14">Welcome to My Terminal Portfolio v1.0.0</text>
+  <text x="150" y="290" fill="#f1e05a" font-family="monospace" font-size="14">Thanks for visiting and let's connect!</text>
+  
+  <!-- Command Prompt -->
+  <text x="130" y="340" fill="#58a6ff" font-family="monospace" font-size="16">feraldy@portfolio</text>
+  <text x="280" y="340" fill="#f0f6fc" font-family="monospace" font-size="16">:</text>
+  <text x="290" y="340" fill="#79c0ff" font-family="monospace" font-size="16">~</text>
+  <text x="310" y="340" fill="#f0f6fc" font-family="monospace" font-size="16">$ help</text>
+  
+  <!-- Available Commands -->
+  <text x="130" y="370" fill="#7ee787" font-family="monospace" font-size="12">Available commands: projects, resume, blog, contact</text>
+  <text x="130" y="390" fill="#7ee787" font-family="monospace" font-size="12">Interactive: tarot, weather, joke, games</text>
+  <text x="130" y="410" fill="#7ee787" font-family="monospace" font-size="12">Type 'help' for full command list</text>
+  
+  <!-- Cursor -->
+  <rect x="310" y="450" width="12" height="20" fill="#f0f6fc" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="1s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Bottom Text -->
+  <text x="600" y="580" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="18" font-weight="bold">Feraldy Nathanael - Interactive Terminal Portfolio</text>
+</svg>

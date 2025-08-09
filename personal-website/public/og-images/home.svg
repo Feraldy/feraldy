@@ -1,0 +1,68 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
+      <stop offset="25%" style="stop-color:#161b22;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#21262d;stop-opacity:1" />
+      <stop offset="75%" style="stop-color:#161b22;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Terminal Window -->
+  <rect x="100" y="80" width="1000" height="470" rx="12" fill="#1c2128" stroke="#30363d" stroke-width="2"/>
+  
+  <!-- Terminal Header -->
+  <rect x="100" y="80" width="1000" height="40" rx="12" fill="#21262d"/>
+  <rect x="100" y="108" width="1000" height="2" fill="#30363d"/>
+  
+  <!-- Terminal Dots -->
+  <circle cx="130" cy="100" r="6" fill="#ff5f56"/>
+  <circle cx="150" cy="100" r="6" fill="#ffbd2e"/>
+  <circle cx="170" cy="100" r="6" fill="#27ca3f"/>
+  
+  <!-- Terminal Title -->
+  <text x="600" y="105" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="14">Terminal - Feraldy Nathanael</text>
+  
+  <!-- Main Content -->
+  <text x="130" y="150" fill="#58a6ff" font-family="monospace" font-size="18">feraldy@portfolio</text>
+  <text x="300" y="150" fill="#f0f6fc" font-family="monospace" font-size="18">:</text>
+  <text x="315" y="150" fill="#79c0ff" font-family="monospace" font-size="18">~</text>
+  <text x="340" y="150" fill="#f0f6fc" font-family="monospace" font-size="18">$ cat about.txt</text>
+  
+  <!-- About Content -->
+  <text x="130" y="190" fill="#f0f6fc" font-family="monospace" font-size="14">Hi, I am a passionate Test Engineer and Project Manager with over 3 years</text>
+  <text x="130" y="210" fill="#f0f6fc" font-family="monospace" font-size="14">of experience in quality assurance and product development.</text>
+  
+  <text x="130" y="240" fill="#f0f6fc" font-family="monospace" font-size="14">I specialize in:</text>
+  <text x="130" y="260" fill="#7ee787" font-family="monospace" font-size="14">• Implementing effective QA processes</text>
+  <text x="130" y="280" fill="#7ee787" font-family="monospace" font-size="14">• Maintaining comprehensive test coverage with Playwright</text>
+  <text x="130" y="300" fill="#7ee787" font-family="monospace" font-size="14">• Managing product documentation and team coordination</text>
+  <text x="130" y="320" fill="#7ee787" font-family="monospace" font-size="14">• Bridging technical and product teams</text>
+  
+  <!-- Skills -->
+  <text x="130" y="360" fill="#58a6ff" font-family="monospace" font-size="16">feraldy@portfolio</text>
+  <text x="300" y="360" fill="#f0f6fc" font-family="monospace" font-size="16">:</text>
+  <text x="315" y="360" fill="#79c0ff" font-family="monospace" font-size="16">~</text>
+  <text x="340" y="360" fill="#f0f6fc" font-family="monospace" font-size="16">$ ls skills/</text>
+  
+  <text x="130" y="390" fill="#ffa657" font-family="monospace" font-size="14">playwright/    typescript/    qase.io/    agile/</text>
+  <text x="130" y="410" fill="#ffa657" font-family="monospace" font-size="14">e2e-testing/   automation/    react/      project-mgmt/</text>
+  
+  <!-- Command Prompt -->
+  <text x="130" y="450" fill="#58a6ff" font-family="monospace" font-size="16">feraldy@portfolio</text>
+  <text x="300" y="450" fill="#f0f6fc" font-family="monospace" font-size="16">:</text>
+  <text x="315" y="450" fill="#79c0ff" font-family="monospace" font-size="16">~</text>
+  <text x="340" y="450" fill="#f0f6fc" font-family="monospace" font-size="16">$ _</text>
+  
+  <!-- Cursor -->
+  <rect x="360" y="435" width="12" height="20" fill="#f0f6fc" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="1s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Bottom Text -->
+  <text x="600" y="580" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="20" font-weight="bold">Test Engineer &amp; Project Manager</text>
+</svg>
