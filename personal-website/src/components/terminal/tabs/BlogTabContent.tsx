@@ -4,9 +4,10 @@ import { BlogPost, getBlogPostBySlug, initializeBlogPosts } from '../../../utils
 
 interface BlogTabContentProps {
   selectedStory?: string | null;
+  onStorySelect?: (storySlug: string | null) => void;
 }
 
-const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory }) => {
+const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory, onStorySelect }) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
@@ -40,10 +41,12 @@ const BlogTabContent: React.FC<BlogTabContentProps> = ({ selectedStory }) => {
 
   const handlePostClick = (post: BlogPost) => {
     setSelectedPost(post);
+    onStorySelect?.(post.slug);
   };
 
   const handleBackToList = () => {
     setSelectedPost(null);
+    onStorySelect?.(null);
   };
 
   const getCategoryBadge = (category: string) => {

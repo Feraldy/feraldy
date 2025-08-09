@@ -83,6 +83,16 @@ const LandingPage: React.FC = () => {
     }
   };
 
+  // Handle blog story selection from within blog tab
+  const handleBlogStorySelect = (storySlug: string | null) => {
+    setSelectedBlogStory(storySlug);
+    if (storySlug) {
+      setSearchParams({ tab: 'blog', story: storySlug });
+    } else {
+      setSearchParams({ tab: 'blog' });
+    }
+  };
+
   // Handle URL parameters on load for tab persistence
   useEffect(() => {
     const tabParam = searchParams.get('tab');
@@ -379,7 +389,7 @@ const LandingPage: React.FC = () => {
       case 'projects':
         return <ProjectsTabContent onBlogStoryClick={handleBlogStoryClick} />;
       case 'blog':
-        return <BlogTabContent selectedStory={selectedBlogStory} />;
+        return <BlogTabContent selectedStory={selectedBlogStory} onStorySelect={handleBlogStorySelect} />;
       default:
         return null;
     }
